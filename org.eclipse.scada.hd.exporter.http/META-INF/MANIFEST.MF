@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: HTTP Exporter for HD (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.hd.exporter.http
-Bundle-Version: 0.1.0.qualifier
-Bundle-Vendor: Eclipse SCADA Project
 Export-Package: org.eclipse.scada.hd.exporter.http;version="0.1.0"
+Bundle-Vendor: Eclipse SCADA Project
+Bundle-Version: 0.1.0.v20131023-1107
+Bundle-Name: HTTP Exporter for HD (Incubation)
+Bundle-ManifestVersion: 2
+Import-Package: com.google.gson;version="1.4.0",com.google.gson.reflec
+ t;version="1.4.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.exporter.http
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.gson;version="1.4.0",
- com.google.gson.reflect;version="1.4.0"
+

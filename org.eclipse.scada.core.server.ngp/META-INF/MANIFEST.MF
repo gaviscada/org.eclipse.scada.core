@@ -1,30 +1,26 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA NextGenerationProtocol Core Server (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.core.server.ngp
-Bundle-Version: 0.1.0.qualifier
-Bundle-Vendor: Eclipse SCADA Project
 Export-Package: org.eclipse.scada.core.server.ngp;version="0.1.0"
+Bundle-Vendor: Eclipse SCADA Project
+Bundle-Version: 0.1.0.v20131023-1107
+Bundle-Name: Eclipse SCADA NextGenerationProtocol Core Server (Incubat
+ ion)
+Bundle-ManifestVersion: 2
+Import-Package: org.apache.mina.core.filterchain;version="2.0.2",org.a
+ pache.mina.core.polling;version="2.0.2",org.apache.mina.core.service;
+ version="2.0.2",org.apache.mina.core.session;version="2.0.2",org.apac
+ he.mina.filter.ssl;version="2.0.2",org.apache.mina.transport.socket.n
+ io;version="2.0.2",org.eclipse.scada.core;version="0.1.0",org.eclipse
+ .scada.core.data;version="0.1.0",org.eclipse.scada.core.data.message;
+ version="0.1.0",org.eclipse.scada.utils.stats;version="0.1.0",org.ecl
+ ipse.scada.core.ngp;version="0.1.0",org.eclipse.scada.core.server;ver
+ sion="0.1.0",org.eclipse.scada.core.server.common;version="0.1.0",org
+ .eclipse.scada.core.server.common.stats;version="0.1.0",org.eclipse.s
+ cada.protocol.common;version="0.1.0",org.eclipse.scada.protocol.ngp.c
+ ommon;version="0.1.0",org.eclipse.scada.protocol.ngp.common.mc;versio
+ n="0.1.0",org.eclipse.scada.protocol.ngp.common.mc.message;version="0
+ .1.0",org.eclipse.scada.sec.callback;version="0.1.0",org.eclipse.scad
+ a.utils.concurrent;version="0.1.0",org.eclipse.scada.utils.statuscode
+ s;version="0.1.0",org.slf4j;version="1.5.0"
+Bundle-SymbolicName: org.eclipse.scada.core.server.ngp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.mina.core.filterchain;version="2.0.2",
- org.apache.mina.core.polling;version="2.0.2",
- org.apache.mina.core.service;version="2.0.2",
- org.apache.mina.core.session;version="2.0.2",
- org.apache.mina.filter.ssl;version="2.0.2",
- org.apache.mina.transport.socket.nio;version="2.0.2",
- org.eclipse.scada.core;version="0.1.0",
- org.eclipse.scada.core.data;version="0.1.0",
- org.eclipse.scada.core.data.message;version="0.1.0",
- org.eclipse.scada.utils.stats;version="0.1.0",
- org.eclipse.scada.core.ngp;version="0.1.0",
- org.eclipse.scada.core.server;version="0.1.0",
- org.eclipse.scada.core.server.common;version="0.1.0",
- org.eclipse.scada.core.server.common.stats;version="0.1.0",
- org.eclipse.scada.protocol.common;version="0.1.0",
- org.eclipse.scada.protocol.ngp.common;version="0.1.0",
- org.eclipse.scada.protocol.ngp.common.mc;version="0.1.0",
- org.eclipse.scada.protocol.ngp.common.mc.message;version="0.1.0",
- org.eclipse.scada.sec.callback;version="0.1.0",
- org.eclipse.scada.utils.concurrent;version="0.1.0",
- org.eclipse.scada.utils.statuscodes;version="0.1.0",
- org.slf4j;version="1.5.0"
+
