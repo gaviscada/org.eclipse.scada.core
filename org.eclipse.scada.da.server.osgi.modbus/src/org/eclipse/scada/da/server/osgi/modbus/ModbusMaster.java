@@ -88,7 +88,7 @@ public class ModbusMaster extends AbstractConnectionDevice
     @Override
     protected void configure ( final Map<String, String> properties ) throws Exception
     {
-        ConfigurationDataHelper cfg = new ConfigurationDataHelper ( properties );
+        final ConfigurationDataHelper cfg = new ConfigurationDataHelper ( properties );
 
         this.name = cfg.getString ( this.name, this.id );
 

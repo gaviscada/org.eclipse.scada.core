@@ -11,6 +11,7 @@
 package org.eclipse.scada.da.server.exporter.common;
 
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.scada.da.client.DataItemValue;
@@ -27,11 +28,39 @@ public class AggregatingSubscriptionManager extends AbstractSubscriptionManager
 
     protected final ScheduledExecutorService executor;
 
+    /**
+     * Create a new subscription manager
+     * 
+     * @param executor
+     *            a single threaded executor
+     * @param hiveSource
+     *            the source of the hive to attach to
+     * @param properties
+     *            the session properties for the hive
+     * @param listener
+     *            optionally a listener that will get a call when any of the
+     *            values in the cache changed
+     */
     public AggregatingSubscriptionManager ( final ScheduledExecutorService executor, final HiveSource hiveSource, final Properties properties, final Listener listener )
     {
-        super ( hiveSource, properties );
+        super ( hiveSource, properties, executor );
         this.executor = executor;
         this.listener = listener;
+    }
+
+    /**
+     * Create a new subscription manager
+     * 
+     * @param executor
+     *            a single threaded executor
+     * @param hiveSource
+     *            the source of the hive to attach to
+     * @param properties
+     *            the session properties for the hive
+     */
+    public AggregatingSubscriptionManager ( final ScheduledExecutorService executor, final HiveSource hiveSource, final Properties properties )
+    {
+        this ( executor, hiveSource, properties, null );
     }
 
     @Override
@@ -46,6 +75,11 @@ public class AggregatingSubscriptionManager extends AbstractSubscriptionManager
         if ( this.started && !ignoreDisposed )
         {
             // early check
+            return;
+        }
+
+        if ( this.listener == null )
+        {
             return;
         }
 
@@ -86,4 +120,11 @@ public class AggregatingSubscriptionManager extends AbstractSubscriptionManager
     {
         super.unsubscribe ( itemId );
     }
+
+    @Override
+    public void subscribeAll ( final Set<String> itemIds )
+    {
+        super.subscribeAll ( itemIds );
+    }
+
 }

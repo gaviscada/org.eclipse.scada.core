@@ -141,8 +141,6 @@
 		<module>../org.eclipse.scada.da.net</module>
 		<module>../org.eclipse.scada.da.server.arduino</module>
 		<module>../org.eclipse.scada.da.server.common</module>
-		<module>../org.eclipse.scada.da.server.common.edit</module>
-		<module>../org.eclipse.scada.da.server.common.editor</module>
 		<module>../org.eclipse.scada.da.server.common.io</module>
 		<module>../org.eclipse.scada.da.server.common.memory</module>
 		<module>../org.eclipse.scada.da.server.common.osgi</module>
@@ -238,6 +236,13 @@
 		<module>../org.eclipse.scada.ngp.test</module>
 		<module>../org.eclipse.scada.da.server.exporter.common</module>
 		<module>../org.eclipse.scada.da.server.exporter.modbus</module>
+		<module>../org.eclipse.scada.sec.provider.ca</module>
+		<module>../org.eclipse.scada.da.server.exporter.rest</module>
+		<module>../org.eclipse.scada.core.doc.isv</module>
+		<module>../org.eclipse.scada.core.ui.editors.feature</module>
+		<module>../org.eclipse.scada.core.client.feature</module>
+		<module>../org.eclipse.scada.core.common.feature</module>
+		<module>../org.eclipse.scada.core.server.feature</module>
 	</modules>
 
 </project>

@@ -18,18 +18,26 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.scada.core.AttributesHelper;
 import org.eclipse.scada.core.InvalidSessionException;
 import org.eclipse.scada.core.Variant;
+import org.eclipse.scada.core.data.OperationParameters;
 import org.eclipse.scada.core.data.SubscriptionState;
 import org.eclipse.scada.da.client.DataItemValue;
+import org.eclipse.scada.da.core.WriteAttributeResults;
+import org.eclipse.scada.da.core.WriteResult;
 import org.eclipse.scada.da.core.server.Hive;
 import org.eclipse.scada.da.core.server.InvalidItemException;
 import org.eclipse.scada.da.core.server.ItemChangeListener;
 import org.eclipse.scada.da.core.server.Session;
+import org.eclipse.scada.sec.callback.CallbackHandler;
 import org.eclipse.scada.sec.callback.PropertiesCredentialsCallback;
 import org.eclipse.scada.utils.concurrent.FutureListener;
+import org.eclipse.scada.utils.concurrent.InstantErrorFuture;
 import org.eclipse.scada.utils.concurrent.NotifyFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSubscriptionManager
 {
     private final static Logger logger = LoggerFactory.getLogger ( AbstractSubscriptionManager.class );
+
+    private static final long RECREATE_DELAY = Long.getLong ( "org.eclipse.scada.da.server.exporter.common.hive.recreateDelay", 10_000 );
 
     private Hive hive;
 
@@ -78,6 +88,10 @@ public abstract class AbstractSubscriptionManager
         }
     };
 
+    private final ScheduledExecutorService executor;
+
+    private ScheduledFuture<?> sessionJob;
+
     /**
      * Create a new subscription manager
      * 
@@ -86,19 +100,14 @@ public abstract class AbstractSubscriptionManager
      * @param properties
      *            the hive connection properties
      */
-    public AbstractSubscriptionManager ( final HiveSource hiveSource, final Properties properties )
+    public AbstractSubscriptionManager ( final HiveSource hiveSource, final Properties properties, final ScheduledExecutorService executor )
     {
         this.properties = properties;
         this.hiveSource = hiveSource;
-
+        this.executor = executor;
     }
 
     public synchronized void start ()
-    {
-        this.hiveSource.addListener ( this.hiveListener );
-    }
-
-    public synchronized void stop ()
     {
         if ( this.started )
         {
@@ -106,6 +115,20 @@ public abstract class AbstractSubscriptionManager
         }
 
         this.started = true;
+        this.hiveSource.addListener ( this.hiveListener );
+    }
+
+    public synchronized void stop ()
+    {
+        if ( !this.started )
+        {
+            return;
+        }
+
+        logger.debug ( "Stopping..." );
+
+        this.started = false;
+        this.subscribeList.clear ();
 
         this.hiveSource.removeListener ( this.hiveListener );
 
@@ -115,7 +138,9 @@ public abstract class AbstractSubscriptionManager
 
     protected synchronized void performSetHive ( final Hive hive )
     {
-        if ( this.started )
+        logger.debug ( "Perform set hive: {}", hive );
+
+        if ( !this.started )
         {
             return;
         }
@@ -127,6 +152,8 @@ public abstract class AbstractSubscriptionManager
 
     protected void bind ( final Hive hive )
     {
+        logger.debug ( "Binding to hive: {}", hive );
+
         // set new hive
         this.hive = hive;
 
@@ -135,24 +162,44 @@ public abstract class AbstractSubscriptionManager
         {
             logger.info ( "Creating new session" );
 
-            this.createSessionFuture = hive.createSession ( this.properties, new PropertiesCredentialsCallback ( this.properties ) );
-            this.createSessionFuture.addListener ( new FutureListener<Session> () {
-
-                @Override
-                public void complete ( final Future<Session> future )
-                {
-                    handleCreateSessionResult ( future );
-                }
-            } );
+            createSession ();
         }
+    }
+
+    private synchronized void createSession ()
+    {
+        if ( this.hive == null )
+        {
+            logger.debug ( "Hive is gone, so stop it" );
+            return;
+        }
+
+        logger.debug ( "Start creating a new session" );
+
+        this.createSessionFuture = this.hive.createSession ( this.properties, new PropertiesCredentialsCallback ( this.properties ) );
+        this.createSessionFuture.addListener ( new FutureListener<Session> () {
+
+            @Override
+            public void complete ( final Future<Session> future )
+            {
+                handleCreateSessionResult ( future );
+            }
+        } );
     }
 
     protected void unbind ()
     {
+        if ( this.sessionJob != null )
+        {
+            this.sessionJob.cancel ( false );
+            this.sessionJob = null;
+        }
+
         if ( this.session != null && this.hive != null )
         {
             try
             {
+                logger.debug ( "Closing session: {}", this.session );
                 this.hive.closeSession ( this.session );
             }
             catch ( final InvalidSessionException e )
@@ -162,6 +209,7 @@ public abstract class AbstractSubscriptionManager
             this.session = null;
             this.hive = null;
         }
+
         if ( this.createSessionFuture != null )
         {
             this.createSessionFuture.cancel ( true );
@@ -173,33 +221,69 @@ public abstract class AbstractSubscriptionManager
     {
         this.createSessionFuture = null;
 
+        logger.debug ( "Creation session call returned" );
+
         try
         {
             this.session = future.get ();
+            logger.debug ( "Got session: {}", this.session );
             this.session.setListener ( this.itemChangeListener );
             subscribeItems ();
         }
         catch ( InterruptedException | ExecutionException e )
         {
             logger.warn ( "Failed to create hive session", e );
+            rescheduleSession ();
         }
+    }
+
+    private synchronized void rescheduleSession ()
+    {
+        logger.info ( "Reschedule session creation" );
+        this.sessionJob = this.executor.schedule ( new Runnable () {
+
+            @Override
+            public void run ()
+            {
+                timerCreateSession ();
+            }
+        }, RECREATE_DELAY, TimeUnit.MILLISECONDS );
+    }
+
+    private synchronized void timerCreateSession ()
+    {
+        logger.debug ( "Starting session by timer" );
+        this.sessionJob = null;
+        createSession ();
     }
 
     private void subscribeItems ()
     {
+        logger.debug ( "Subscribe to known items - {}", this.subscribeList.size () );
+
         for ( final String itemId : this.subscribeList )
         {
             performSubscribe ( itemId );
         }
     }
 
+    /**
+     * Subscribe to an item
+     * <p>
+     * Subscriptions may only be made after the manager was started using
+     * {@link #start()}.
+     * </p>
+     * 
+     * @param itemId
+     *            id of the item to subscribe to
+     */
     protected synchronized void subscribe ( final String itemId )
     {
         logger.trace ( "Subscribe to - itemId: {}", itemId );
 
         if ( this.started )
         {
-            return;
+            throw new IllegalStateException ( "Items may only be subscribed when manager is started" );
         }
 
         if ( !this.subscribeList.add ( itemId ) )
@@ -212,6 +296,29 @@ public abstract class AbstractSubscriptionManager
             return;
         }
         performSubscribe ( itemId );
+    }
+
+    /**
+     * Subscribe to multiple items
+     * <p>
+     * Subscriptions may only be made after the manager was started using
+     * {@link #start()}.
+     * </p>
+     * 
+     * @param itemIds
+     *            the ids of the items to subscribe to
+     */
+    protected synchronized void subscribeAll ( final Set<String> itemIds )
+    {
+        if ( itemIds == null )
+        {
+            return;
+        }
+
+        for ( final String itemId : itemIds )
+        {
+            subscribe ( itemId );
+        }
     }
 
     private void performSubscribe ( final String itemId )
@@ -275,12 +382,21 @@ public abstract class AbstractSubscriptionManager
 
     public synchronized Map<String, DataItemValue> getCacheCopy ()
     {
-        if ( this.started )
+        if ( !this.started )
         {
             return Collections.emptyMap ();
         }
 
         return new HashMap<> ( this.cache );
+    }
+
+    public synchronized DataItemValue getCacheValue ( final String itemId )
+    {
+        if ( !this.started )
+        {
+            return null;
+        }
+        return this.cache.get ( itemId );
     }
 
     protected synchronized void handleDataChanged ( final String itemId, final Variant value, final Map<String, Variant> attributes, final boolean cache )
@@ -341,5 +457,29 @@ public abstract class AbstractSubscriptionManager
 
         // put the state to the cache
         putState ( itemId, builder.build () );
+    }
+
+    public synchronized NotifyFuture<WriteResult> writeValue ( final String itemId, final Variant value, final OperationParameters operationParameters, final CallbackHandler callbackHandler )
+    {
+        try
+        {
+            return this.hive.startWrite ( this.session, itemId, value, operationParameters, callbackHandler );
+        }
+        catch ( final Exception e )
+        {
+            return new InstantErrorFuture<> ( e );
+        }
+    }
+
+    public synchronized NotifyFuture<WriteAttributeResults> writeAttributes ( final String itemId, final Map<String, Variant> attributes, final OperationParameters operationParameters, final CallbackHandler callbackHandler )
+    {
+        try
+        {
+            return this.hive.startWriteAttributes ( this.session, itemId, attributes, operationParameters, callbackHandler );
+        }
+        catch ( final Exception e )
+        {
+            return new InstantErrorFuture<> ( e );
+        }
     }
 }

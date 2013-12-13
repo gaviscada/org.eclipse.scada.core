@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.scada.da.server.osgi.modbus;
 
+import java.nio.ByteOrder;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.scada.ca.ConfigurationDataHelper;
 import org.eclipse.scada.da.server.common.io.JobManager;
 import org.eclipse.scada.da.server.osgi.modbus.MasterFactory.Listener;
+import org.eclipse.scada.protocol.modbus.codec.ModbusProtocol;
 import org.eclipse.scada.protocol.modbus.message.ReadRequest;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class ModbusSlave implements Listener
 
     private long timeoutQuietPeriod;
 
-    private AtomicInteger transactionId;
+    private final AtomicInteger transactionId;
 
     public static ModbusSlave create ( final BundleContext context, final Executor executor, final String configurationId, final Map<String, String> parameters, final MasterFactory masterFactory, final AtomicInteger transactionId )
     {
@@ -68,7 +68,7 @@ public class ModbusSlave implements Listener
         this.context = context;
         this.masterFactory = masterFactory;
         this.transactionId = transactionId;
-        
+
         synchronized ( this )
         {
             this.masterFactory.addMasterListener ( this );
@@ -77,8 +77,17 @@ public class ModbusSlave implements Listener
 
     public void dispose ()
     {
+        logger.info ( "Disposing block: {}", this.id );
+
         this.masterFactory.removeMasterListener ( this );
         stop ();
+        for ( final ModbusRequestBlock block : this.blocks.values () )
+        {
+            block.dispose ();
+        }
+        this.blocks.clear ();
+
+        logger.info ( "Block {} disposed", this.id );
     }
 
     protected synchronized void configure ( final Map<String, String> properties )
@@ -89,33 +98,35 @@ public class ModbusSlave implements Listener
         this.slaveAddress = Byte.parseByte ( cfg.getStringChecked ( "slave.id", "'slave.id' must be set to a valid modbus slave id" ) );
         this.timeoutQuietPeriod = cfg.getLong ( "timeoutQuietPeriod", 10_000 );
 
-        final Set<String> ids = new HashSet<> ();
+        final ByteOrder dataOrder = ModbusProtocol.makeOrder ( cfg.getString ( "dataOrder" ), ByteOrder.BIG_ENDIAN );
 
-        for ( final Map.Entry<String, String> entry : cfg.getPrefixed ( "block." ).entrySet () )
+        try
         {
-            final Request request = parseRequest ( entry.getValue () );
-            addBlock ( entry.getKey (), request );
-            ids.add ( entry.getKey () );
+            // we only add blocks since we are re-created on any change
+
+            for ( final Map.Entry<String, String> entry : cfg.getPrefixed ( "block." ).entrySet () )
+            {
+                final Request request = parseRequest ( entry.getValue (), dataOrder );
+                addBlock ( entry.getKey (), request );
+            }
+
+            // set master device
+
+            final String newMasterId = cfg.getStringChecked ( "modbus.master.id", "'modbus.master.id' must be set to the id of a master device" );
+            if ( !newMasterId.equals ( this.masterId ) )
+            {
+                logger.debug ( "setting new master id: {} -> {}", this.masterId, newMasterId );
+
+                unbindMaster ();
+                this.masterId = newMasterId;
+                this.masterFactory.resend ( this );
+            }
         }
-
-        // now remove all that are not there anymore
-        final HashSet<String> currentKeys = new HashSet<> ( this.blocks.keySet () );
-        currentKeys.removeAll ( ids );
-        for ( final String id : currentKeys )
+        catch ( final Exception e )
         {
-            removeBlock ( id );
-        }
-
-        // set master device
-
-        final String newMasterId = cfg.getStringChecked ( "modbus.master.id", "'modbus.master.id' must be set to the id of a master device" );
-        if ( !newMasterId.equals ( this.masterId ) )
-        {
-            logger.debug ( "setting new master id: {} -> {}", this.masterId, newMasterId );
-
-            unbindMaster ();
-            this.masterId = newMasterId;
-            this.masterFactory.resend ( this );
+            // dispose since we might have added some blocks already
+            dispose ();
+            throw e;
         }
     }
 
@@ -156,7 +167,7 @@ public class ModbusSlave implements Listener
         stop ();
     }
 
-    private Request parseRequest ( final String value )
+    private Request parseRequest ( final String value, final ByteOrder dataOrder )
     {
         // format: FC:START:COUNT:PERIOD
         // period is in "ms"
@@ -188,7 +199,7 @@ public class ModbusSlave implements Listener
         final long timeout = Long.parseLong ( toks[idx++] );
         final String mainTypeName = toks[idx++];
 
-        return new Request ( type, startAddress, count, period, timeout, mainTypeName, eager );
+        return new Request ( type, startAddress, count, period, timeout, mainTypeName, eager, dataOrder );
     }
 
     public synchronized void start ( final ModbusMaster master, final JobManager jobManager )
@@ -200,7 +211,7 @@ public class ModbusSlave implements Listener
 
         for ( final Map.Entry<String, ModbusRequestBlock> entry : this.blocks.entrySet () )
         {
-            jobManager.addBlock ( this.id + "." + entry.getKey (), entry.getValue () );
+            this.jobManager.addBlock ( makeBlockId ( entry.getKey () ), entry.getValue () );
         }
     }
 
@@ -216,7 +227,7 @@ public class ModbusSlave implements Listener
 
         for ( final Map.Entry<String, ModbusRequestBlock> entry : this.blocks.entrySet () )
         {
-            this.jobManager.removeBlock ( entry.getKey () );
+            this.jobManager.removeBlock ( makeBlockId ( entry.getKey () ) );
         }
 
         this.master = null;
@@ -227,35 +238,34 @@ public class ModbusSlave implements Listener
     {
         logger.debug ( "Adding block: {}", id );
 
-        final ModbusRequestBlock block = new ModbusRequestBlock ( this.executor, this.id + "." + id, this.name, request.getMainTypeName (), this, this.context, request, this.transactionId, true );
+        removeBlock ( id );
 
-        final ModbusRequestBlock oldBlock = this.blocks.put ( id, block );
+        final ModbusRequestBlock block = new ModbusRequestBlock ( this.executor, makeBlockId ( id ), this.name, request.getMainTypeName (), this, this.context, request, this.transactionId, true );
 
-        if ( oldBlock != null )
-        {
-            if ( this.jobManager != null )
-            {
-                this.jobManager.removeBlock ( id );
-            }
-            oldBlock.dispose ();
-        }
+        this.blocks.put ( id, block );
 
         if ( this.jobManager != null )
         {
-            this.jobManager.addBlock ( id, block );
+            this.jobManager.addBlock ( makeBlockId ( id ), block );
         }
+    }
+
+    private String makeBlockId ( final String id )
+    {
+        return this.id + "." + id;
     }
 
     protected synchronized void removeBlock ( final String id )
     {
-        logger.debug ( "Removing block: {}", id );
+        logger.trace ( "Removing block: {}", id );
 
         final ModbusRequestBlock block = this.blocks.remove ( id );
         if ( block != null )
         {
+            logger.debug ( "Removed block: {}", id );
             if ( this.jobManager != null )
             {
-                this.jobManager.removeBlock ( id );
+                this.jobManager.removeBlock ( makeBlockId ( id ) );
             }
             block.dispose ();
         }

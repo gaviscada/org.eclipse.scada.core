@@ -177,7 +177,7 @@ public class ModbusExport
     {
         final ConfigurationDataHelper cfg = new ConfigurationDataHelper ( parameters );
         setReadTimeout ( cfg.getInteger ( "timeout", 10_000 ) ); //$NON-NLS-1$
-        setPort ( cfg.getInteger ( "port", 502 ) ); //$NON-NLS-1$
+        setPort ( cfg.getInteger ( "port", 502 ) ); //$NON-NLS-1$ 
         setSlaveId ( cfg.getInteger ( "slaveId", 1 ) ); //$NON-NLS-1$
         setProperties ( cfg.getPrefixedProperties ( "hive." ) ); //$NON-NLS-1$
         configureDefinitions ( cfg );
