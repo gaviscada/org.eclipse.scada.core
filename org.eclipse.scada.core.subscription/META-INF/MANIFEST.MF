@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.core.subscription;version="0.1.0"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20131023-1107
-Bundle-Name: Eclipse SCADA Core Subscription (Incubation)
 Bundle-ManifestVersion: 2
-Import-Package: org.eclipse.scada.core.data;version="0.1.0"
+Bundle-Name: Eclipse SCADA Core Subscription (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.core.subscription
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.core.subscription;version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: org.eclipse.scada.core.data;version="0.1.0"

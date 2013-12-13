@@ -1,11 +1,9 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.core.data;version="0.1.0",org.eclips
- e.scada.core.data.message;version="0.1.0";uses:="org.eclipse.scada.co
- re.data"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20131023-1107
-Bundle-Name: Eclipse SCADA Core Data (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse SCADA Core Data (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.core.data
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.core.data;version="0.1.0",
+ org.eclipse.scada.core.data.message;version="0.1.0";uses:="org.eclipse.scada.core.data"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-

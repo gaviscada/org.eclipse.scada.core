@@ -1,20 +1,24 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.da.server.common.osgi.factory;versio
- n="0.1.0"; uses:="org.eclipse.scada.utils.osgi.pool,  org.osgi.framew
- ork,  org.eclipse.scada.da.server.common,  org.eclipse.scada.da.serve
- r.common.item.factory,  org.eclipse.scada.da.server.common.chain"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20131118-1129
-Bundle-Name: Eclipse SCADA DA Server Common OSGi (Incubation)
 Bundle-ManifestVersion: 2
-Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
- da.da.core;version="0.1.0",org.eclipse.scada.da.core.server;version="
- 0.1.0",org.eclipse.scada.da.data;version="0.1.0",org.eclipse.scada.da
- .server.common;version="0.1.0",org.eclipse.scada.da.server.common.cha
- in;version="0.1.0",org.eclipse.scada.da.server.common.chain.item;vers
- ion="0.1.0",org.eclipse.scada.da.server.common.item.factory;version="
- 0.1.0",org.eclipse.scada.utils.osgi.pool;version="0.1.0",org.osgi.fra
- mework;version="1.6.0",org.slf4j;version="1.5.0"
+Bundle-Name: Eclipse SCADA DA Server Common OSGi (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.da.server.common.osgi
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.da.server.common.osgi.factory;version="0.1.0";
+  uses:="org.eclipse.scada.utils.osgi.pool,
+   org.osgi.framework,
+   org.eclipse.scada.da.server.common,
+   org.eclipse.scada.da.server.common.item.factory,
+   org.eclipse.scada.da.server.common.chain"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: org.eclipse.scada.core;version="0.1.0",
+ org.eclipse.scada.da.core;version="0.1.0",
+ org.eclipse.scada.da.core.server;version="0.1.0",
+ org.eclipse.scada.da.data;version="0.1.0",
+ org.eclipse.scada.da.server.common;version="0.1.0",
+ org.eclipse.scada.da.server.common.chain;version="0.1.0",
+ org.eclipse.scada.da.server.common.chain.item;version="0.1.0",
+ org.eclipse.scada.da.server.common.item.factory;version="0.1.0",
+ org.eclipse.scada.utils.osgi.pool;version="0.1.0",
+ org.osgi.framework;version="1.6.0",
+ org.slf4j;version="1.5.0"
