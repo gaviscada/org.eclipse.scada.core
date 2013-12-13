@@ -1,26 +1,24 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA NextGenerationProtocol HD Codec (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.hd.protocol.ngp.codec
-Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eclipse.scada.hd.protocol.ngp.codec;version="0.1.0
+ "; uses:="org.eclipse.scada.protocol.ngp.common.mc.protocol,  org.ecl
+ ipse.scada.hd.data,  org.eclipse.scada.protocol.ngp.common.utils,  or
+ g.eclipse.scada.protocol.ngp.common.mc.protocol.osbp,  org.apache.min
+ a.core.buffer"
 Bundle-Vendor: Eclipse SCADA Project
-Export-Package: org.eclipse.scada.hd.protocol.ngp.codec;version="0.1.0";
-  uses:="org.eclipse.scada.protocol.ngp.common.mc.protocol,
-   org.eclipse.scada.hd.data,
-   org.eclipse.scada.protocol.ngp.common.utils,
-   org.eclipse.scada.protocol.ngp.common.mc.protocol.osbp,
-   org.apache.mina.core.buffer"
+Bundle-Version: 0.1.0.v20131213-1406
+Bundle-Name: Eclipse SCADA NextGenerationProtocol HD Codec (Incubation
+ )
+Bundle-ManifestVersion: 2
+Import-Package: org.apache.mina.core;version="2.0.4",org.apache.mina.c
+ ore.buffer;version="2.0.4",org.apache.mina.core.session;version="2.0.
+ 4",org.apache.mina.filter.codec;version="2.0.4",org.eclipse.scada.cor
+ e;version="0.1.0",org.eclipse.scada.core.data;version="0.1.0",org.ecl
+ ipse.scada.core.ngp.common.codec.osbp;version="0.1.0",org.eclipse.sca
+ da.core.protocol.ngp.codec;version="0.1.0",org.eclipse.scada.hd.data;
+ version="0.1.0",org.eclipse.scada.hd.data.message;version="0.1.0",org
+ .eclipse.scada.protocol.ngp.common.mc.protocol;version="0.1.0",org.ec
+ lipse.scada.protocol.ngp.common.utils;version="0.1.0",org.slf4j;versi
+ on="1.6.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.protocol.ngp.codec
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.mina.core;version="2.0.4",
- org.apache.mina.core.buffer;version="2.0.4",
- org.apache.mina.core.session;version="2.0.4",
- org.apache.mina.filter.codec;version="2.0.4",
- org.eclipse.scada.core;version="0.1.0",
- org.eclipse.scada.core.data;version="0.1.0",
- org.eclipse.scada.core.ngp.common.codec.osbp;version="0.1.0",
- org.eclipse.scada.core.protocol.ngp.codec;version="0.1.0",
- org.eclipse.scada.hd.data;version="0.1.0",
- org.eclipse.scada.hd.data.message;version="0.1.0",
- org.eclipse.scada.protocol.ngp.common.mc.protocol;version="0.1.0",
- org.eclipse.scada.protocol.ngp.common.utils;version="0.1.0",
- org.slf4j;version="1.6.0"
+

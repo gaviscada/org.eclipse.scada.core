@@ -1,15 +1,15 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA AE Filter Support (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.ae.filter
-Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eclipse.scada.ae.filter;version="0.1.0",org.eclips
+ e.scada.ae.filter.internal;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Export-Package: org.eclipse.scada.ae.filter;version="0.1.0",
- org.eclipse.scada.ae.filter.internal;version="0.1.0"
+Bundle-Version: 0.1.0.v20131213-1406
+Bundle-Name: Eclipse SCADA AE Filter Support (Incubation)
+Bundle-ManifestVersion: 2
+Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
+ .core;version="0.1.0",org.eclipse.scada.utils.filter;version="0.1.0",
+ org.eclipse.scada.utils.lang;version="0.1.0",org.eclipse.scada.utils.
+ propertyeditors;version="0.1.0",org.eclipse.scada.utils.str;version="
+ 0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.ae.filter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.scada.ae;version="0.1.0",
- org.eclipse.scada.core;version="0.1.0",
- org.eclipse.scada.utils.filter;version="0.1.0",
- org.eclipse.scada.utils.lang;version="0.1.0",
- org.eclipse.scada.utils.propertyeditors;version="0.1.0",
- org.eclipse.scada.utils.str;version="0.1.0"
+
