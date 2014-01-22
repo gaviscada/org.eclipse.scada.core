@@ -1,24 +1,29 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.da.server.io.common;version="0.1.0"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20131213-1406
-Bundle-Name: Base IO Functionality (Incubation)
 Bundle-ManifestVersion: 2
-Import-Package: org.apache.mina.core.buffer;version="2.0.2",org.apache
- .mina.core.file;version="2.0.2",org.apache.mina.core.filterchain;vers
- ion="2.0.2",org.apache.mina.core.future;version="2.0.2",org.apache.mi
- na.core.service;version="2.0.2",org.apache.mina.core.session;version=
- "2.0.2",org.apache.mina.core.write;version="2.0.2",org.apache.mina.fi
- lter.codec;version="2.0.2",org.apache.mina.filter.logging;version="2.
- 0.2",org.apache.mina.transport.socket;version="2.0.2",org.apache.mina
- .transport.socket.nio;version="2.0.2",org.eclipse.scada.core;version=
- "0.1.0",org.eclipse.scada.core.server.common;version="0.1.0",org.ecli
- pse.scada.da.core;version="0.1.0",org.eclipse.scada.da.core.server;ve
- rsion="0.1.0",org.eclipse.scada.da.server.browser.common;version="0.1
- .0",org.eclipse.scada.da.server.common;version="0.1.0",org.eclipse.sc
- ada.da.server.common.chain;version="0.1.0",org.eclipse.scada.da.serve
- r.common.impl;version="0.1.0",org.eclipse.scada.utils.collection;vers
- ion="0.1.0",org.slf4j;version="1.6.0"
+Bundle-Name: Base IO Functionality (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.da.server.io.common
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.da.server.io.common;version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-
+Import-Package: org.apache.mina.core.buffer;version="2.0.2",
+ org.apache.mina.core.file;version="2.0.2",
+ org.apache.mina.core.filterchain;version="2.0.2",
+ org.apache.mina.core.future;version="2.0.2",
+ org.apache.mina.core.service;version="2.0.2",
+ org.apache.mina.core.session;version="2.0.2",
+ org.apache.mina.core.write;version="2.0.2",
+ org.apache.mina.filter.codec;version="2.0.2",
+ org.apache.mina.filter.logging;version="2.0.2",
+ org.apache.mina.transport.socket;version="2.0.2",
+ org.apache.mina.transport.socket.nio;version="2.0.2",
+ org.eclipse.scada.core;version="0.1.0",
+ org.eclipse.scada.core.server.common;version="0.1.0",
+ org.eclipse.scada.da.core;version="0.1.0",
+ org.eclipse.scada.da.core.server;version="0.1.0",
+ org.eclipse.scada.da.server.browser.common;version="0.1.0",
+ org.eclipse.scada.da.server.common;version="0.1.0",
+ org.eclipse.scada.da.server.common.chain;version="0.1.0",
+ org.eclipse.scada.da.server.common.impl;version="0.1.0",
+ org.eclipse.scada.utils.collection;version="0.1.0",
+ org.slf4j;version="1.6.0"
