@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA NextGenerationProtocol CA Data Classes (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.ca.data
-Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eclipse.scada.ca.data;version="0.1.0",org.eclipse.
+ scada.ca.data.message;version="0.1.0";uses:="org.eclipse.scada.ca.dat
+ a,org.eclipse.scada.core.data"
 Bundle-Vendor: Eclipse SCADA Project
-Export-Package: org.eclipse.scada.ca.data;version="0.1.0",
- org.eclipse.scada.ca.data.message;version="0.1.0";uses:="org.eclipse.scada.ca.data,org.eclipse.scada.core.data"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 0.1.0.v20140122-1129
+Bundle-Name: Eclipse SCADA NextGenerationProtocol CA Data Classes (Inc
+ ubation)
+Bundle-ManifestVersion: 2
 Import-Package: org.eclipse.scada.core.data;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.ca.data
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+

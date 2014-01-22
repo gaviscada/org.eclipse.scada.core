@@ -1,18 +1,17 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA Historical Data (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.hd
-Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eclipse.scada.hd;version="0.1.0",org.eclipse.scada
+ .hd.client;version="0.1.0",org.eclipse.scada.hd.server;version="0.1.0
+ "
 Bundle-Vendor: Eclipse SCADA Project
-Export-Package: org.eclipse.scada.hd;version="0.1.0",
- org.eclipse.scada.hd.client;version="0.1.0",
- org.eclipse.scada.hd.server;version="0.1.0"
+Bundle-Version: 0.1.0.v20131220-1157
+Bundle-Name: Eclipse SCADA Historical Data (Incubation)
+Bundle-ManifestVersion: 2
+Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
+ da.core.client;version="0.1.0",org.eclipse.scada.core.server;version=
+ "0.1.0",org.eclipse.scada.hd.data;version="0.1.0",org.eclipse.scada.s
+ ec.callback;version="0.1.0",org.eclipse.scada.utils.lang;version="0.1
+ .0",org.eclipse.scada.utils.lifecycle;version="0.1.0",org.eclipse.sca
+ da.utils.statuscodes;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.hd
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.scada.core;version="0.1.0",
- org.eclipse.scada.core.client;version="0.1.0",
- org.eclipse.scada.core.server;version="0.1.0",
- org.eclipse.scada.hd.data;version="0.1.0",
- org.eclipse.scada.sec.callback;version="0.1.0",
- org.eclipse.scada.utils.lang;version="0.1.0",
- org.eclipse.scada.utils.lifecycle;version="0.1.0",
- org.eclipse.scada.utils.statuscodes;version="0.1.0"
+
