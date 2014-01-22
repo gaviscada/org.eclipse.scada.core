@@ -31,6 +31,8 @@ import org.eclipse.scada.da.datasource.DataSourceListener;
 import org.eclipse.scada.da.datasource.SingleDataSourceTracker;
 import org.eclipse.scada.da.datasource.SingleDataSourceTracker.ServiceListener;
 import org.eclipse.scada.da.datasource.base.DataInputSource;
+import org.eclipse.scada.da.datasource.data.DataItemValueLight;
+import org.eclipse.scada.da.datasource.data.DataItemValueRange;
 import org.eclipse.scada.utils.osgi.pool.ObjectPoolImpl;
 import org.eclipse.scada.utils.osgi.pool.ObjectPoolTracker;
 import org.osgi.framework.InvalidSyntaxException;
@@ -87,7 +89,7 @@ public class MovingAverageDataSource implements DataSourceListener
     {
         this.executor = executor;
         this.scheduler = scheduler;
-        this.valueRange = new DataItemValueRange ( executor, 0 );
+        this.valueRange = new DataItemValueRange ( 0 );
         this.configurationId = configurationId;
         this.poolTracker = poolTracker;
         this.dsObjectPool = dsObjectPool;
@@ -182,7 +184,7 @@ public class MovingAverageDataSource implements DataSourceListener
 
     private void handleChange () throws InvalidSyntaxException
     {
-        this.valueRange = new DataItemValueRange ( this.executor, this.range * 1000 );
+        this.valueRange = new DataItemValueRange ( this.range * 1000 );
         updateDataSource ();
         this.triggerFuture = this.scheduler.scheduleAtFixedRate ( new Runnable () {
             @Override

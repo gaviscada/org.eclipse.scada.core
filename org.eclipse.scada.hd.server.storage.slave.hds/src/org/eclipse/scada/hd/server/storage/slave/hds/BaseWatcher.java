@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2013 IBH SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     TH4 SYSTEMS GmbH - initial API and implementation
+ *     IBH SYSTEMS GmbH - initial API and implementation
  *******************************************************************************/
 package org.eclipse.scada.hd.server.storage.slave.hds;
 
@@ -70,6 +70,8 @@ public class BaseWatcher
             baseWatcher.addWatcherMap ( new File ( path.toFile (), "native" ).toPath (), this );
 
             final File nativeDir = new File ( path.toFile (), "native" );
+            logger.debug ( "Checking native dir: {}", nativeDir );
+
             if ( nativeDir.exists () && nativeDir.isDirectory () )
             {
                 this.nativeKey = nativeDir.toPath ().register ( this.watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE );
@@ -80,6 +82,9 @@ public class BaseWatcher
         public void check ()
         {
             final String id = this.storageManager.probe ( this.path.toFile () );
+
+            logger.debug ( "Checking - id: {}, file: {}", id, this.path );
+
             if ( id == null )
             {
                 logger.info ( "Path {} is not a valid storage", this.path );
@@ -93,6 +98,8 @@ public class BaseWatcher
 
         private void storageRemoved ()
         {
+            logger.debug ( "Storage removed" );
+
             if ( this.id != null )
             {
                 this.baseWatcher.removeStorage ( this.id, this.path.toFile () );
@@ -102,6 +109,7 @@ public class BaseWatcher
 
         private void storageAdded ( final String id )
         {
+            logger.debug ( "Storage added: {}", id );
             try
             {
                 this.id = null;
@@ -116,6 +124,8 @@ public class BaseWatcher
 
         public void dispose ()
         {
+            logger.debug ( "Disposing: {}", this.id );
+
             this.baseWatcher.removeWatcherMap ( this.path );
             this.baseWatcher.removeWatcherMap ( new File ( this.path.toFile (), "native" ).toPath () );
 
