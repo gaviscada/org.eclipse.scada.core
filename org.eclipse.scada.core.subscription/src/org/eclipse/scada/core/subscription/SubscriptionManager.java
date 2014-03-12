@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2012, 2014 TH4 SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,37 +7,50 @@
  *
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
+ *     IBH SYSTEMS GmbH - change interface
  *******************************************************************************/
 package org.eclipse.scada.core.subscription;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manage subscriptions.
  * 
  * @author Jens Reimann &lt;jens.reimann@th4-systems.com&gt;
+ * @param T
+ *            the type of the topic
  */
-public class SubscriptionManager
+public class SubscriptionManager<T>
 {
-    private final Map<Object, Subscription> subscriptions = new HashMap<Object, Subscription> ();
+    private final Map<T, Subscription<T>> subscriptions = new HashMap<T, Subscription<T>> ();
 
-    private SubscriptionValidator validator = null;
+    private final SubscriptionValidator<T> validator;
+
+    public SubscriptionManager ( final SubscriptionValidator<T> validator )
+    {
+        this.validator = validator;
+    }
+
+    public SubscriptionManager ()
+    {
+        this.validator = null;
+    }
 
     /**
-     * Unsibscribe from all subscriptions that the listener has subscribed to
+     * Unsubscribe from all subscriptions that the listener has subscribed to
      * 
      * @param listener
      *            the listener to unsubscribe
      */
-    public synchronized void unsubscribeAll ( final SubscriptionListener listener )
+    public synchronized void unsubscribeAll ( final SubscriptionListener<T> listener )
     {
-        for ( final Iterator<Map.Entry<Object, Subscription>> i = this.subscriptions.entrySet ().iterator (); i.hasNext (); )
+        for ( final Iterator<Map.Entry<T, Subscription<T>>> i = this.subscriptions.entrySet ().iterator (); i.hasNext (); )
         {
-            final Map.Entry<Object, Subscription> entry = i.next ();
+            final Map.Entry<T, Subscription<T>> entry = i.next ();
             entry.getValue ().unsubscribe ( listener );
 
             if ( entry.getValue ().isEmpty () )
@@ -58,7 +71,7 @@ public class SubscriptionManager
      *             thrown if the subscription cannot be established (e.g. the
      *             topic is invalid)
      */
-    public synchronized void subscribe ( final Object topic, final SubscriptionListener listener ) throws ValidationException
+    public synchronized void subscribe ( final T topic, final SubscriptionListener<T> listener ) throws ValidationException
     {
         subscribe ( topic, listener, null );
     }
@@ -76,38 +89,51 @@ public class SubscriptionManager
      *             thrown if the subscription cannot be established (e.g. the
      *             topic is invalid)
      */
-    public synchronized void subscribe ( final Object topic, final SubscriptionListener listener, final Object hint ) throws ValidationException
+    public synchronized void subscribe ( final T topic, final SubscriptionListener<T> listener, final Object hint ) throws ValidationException
     {
         // If we have a validator then do validate
-        SubscriptionValidator v;
-        if ( ( v = this.validator ) != null )
+        if ( this.validator != null )
         {
-            if ( !v.validate ( listener, topic ) )
+            if ( !this.validator.validate ( listener, topic ) )
             {
                 throw new ValidationException ();
             }
         }
 
         // Get subscription or create one if there is none
-        Subscription s = this.subscriptions.get ( topic );
+        Subscription<T> s = this.subscriptions.get ( topic );
         if ( s == null )
         {
-            s = new Subscription ( topic );
+            s = new Subscription<T> ( topic );
             this.subscriptions.put ( topic, s );
         }
 
+        final boolean wasSubscribed = s.isSubscribed ();
+
         s.subscribe ( listener, hint );
+
+        if ( !wasSubscribed && s.isSubscribed () )
+        {
+            topicSubscriptionAdded ( topic );
+        }
     }
 
-    public synchronized void unsubscribe ( final Object topic, final SubscriptionListener listener )
+    public synchronized void unsubscribe ( final T topic, final SubscriptionListener<T> listener )
     {
-        final Subscription s = this.subscriptions.get ( topic );
+        final Subscription<T> s = this.subscriptions.get ( topic );
         if ( s == null )
         {
             return;
         }
 
+        final boolean wasSubscribed = s.isSubscribed ();
+
         s.unsubscribe ( listener );
+
+        if ( wasSubscribed && !s.isSubscribed () )
+        {
+            topicSubscriptionRemoved ( topic );
+        }
 
         // if the subscription is empty we can erase it
         if ( s.isEmpty () )
@@ -116,9 +142,26 @@ public class SubscriptionManager
         }
     }
 
-    public void setValidator ( final SubscriptionValidator validator )
+    /**
+     * Gets called when somebody subscribed to a topic that was not subscribed
+     * before
+     * 
+     * @param topic
+     *            the topic
+     */
+    protected void topicSubscriptionAdded ( final T topic )
     {
-        this.validator = validator;
+    }
+
+    /**
+     * Get called when somebody unsubscribed from a topic and it was the last
+     * subscription
+     * 
+     * @param topic
+     *            the topic
+     */
+    protected void topicSubscriptionRemoved ( final T topic )
+    {
     }
 
     /**
@@ -131,9 +174,9 @@ public class SubscriptionManager
      * @param source
      *            the source to set
      */
-    public synchronized void setSource ( final Object topic, final SubscriptionSource source )
+    public synchronized void setSource ( final T topic, final SubscriptionSource<T> source )
     {
-        Subscription s = this.subscriptions.get ( topic );
+        Subscription<T> s = this.subscriptions.get ( topic );
         if ( s == null && source == null )
         {
             return;
@@ -141,7 +184,7 @@ public class SubscriptionManager
 
         if ( s == null )
         {
-            s = new Subscription ( topic );
+            s = new Subscription<T> ( topic );
             this.subscriptions.put ( topic, s );
         }
 
@@ -158,21 +201,21 @@ public class SubscriptionManager
      * 
      * @return the number of subscriptions
      */
-    public int getSubscriptionCount ()
+    public synchronized int getSubscriptionCount ()
     {
         return this.subscriptions.size ();
     }
 
     /**
-     * Get all topic whose subscription is in granted state.
+     * Get all topics whose subscription is in granted state.
      * 
      * @return The list of topics whose subscription is in granted state.
      */
-    public synchronized List<Object> getAllGrantedTopics ()
+    public synchronized Set<T> getAllGrantedTopics ()
     {
-        final List<Object> topicList = new LinkedList<Object> ();
+        final Set<T> topicList = new HashSet<T> ();
 
-        for ( final Map.Entry<Object, Subscription> entry : this.subscriptions.entrySet () )
+        for ( final Map.Entry<T, Subscription<T>> entry : this.subscriptions.entrySet () )
         {
             if ( entry.getValue ().isGranted () )
             {

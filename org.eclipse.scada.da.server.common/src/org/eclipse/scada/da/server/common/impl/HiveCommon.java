@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2010, 2014 TH4 SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
+ *     IBH SYSTEMS GmbH - clean up subscription manager
  *******************************************************************************/
 package org.eclipse.scada.da.server.common.impl;
 
@@ -34,8 +35,9 @@ import org.eclipse.scada.core.server.common.AuthorizationProvider;
 import org.eclipse.scada.core.server.common.AuthorizedOperation;
 import org.eclipse.scada.core.server.common.ServiceCommon;
 import org.eclipse.scada.core.server.common.session.AbstractSessionImpl;
+import org.eclipse.scada.core.subscription.ListenableSubscriptionManager;
 import org.eclipse.scada.core.subscription.SubscriptionListener;
-import org.eclipse.scada.core.subscription.SubscriptionManager;
+import org.eclipse.scada.core.subscription.SubscriptionManagerListener;
 import org.eclipse.scada.core.subscription.SubscriptionValidator;
 import org.eclipse.scada.core.subscription.ValidationException;
 import org.eclipse.scada.da.core.WriteAttributeResults;
@@ -65,6 +67,26 @@ import org.eclipse.scada.utils.concurrent.NotifyFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A common base for implementing Hive instances <h1>Lifecycle</h1>
+ * <p>
+ * Hives are created using the constructor. There is no defined destructor.
+ * However there are start and stop methods that may create and free resources.
+ * All resources allocated in the start method should be destroyed in the stop
+ * method.
+ * </p>
+ * <p>
+ * The item subscription manager will also be created in the
+ * {@link #performStart()} method. So registering items is only possible
+ * <em>after</em> the hive has been started.
+ * </p>
+ * <code>
+ * protected void performStart () {
+ *  super.performStart ();
+ *  registerItem ( "abc", … );
+ * }
+ * </code>
+ */
 public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> implements Hive
 {
     private final static Logger logger = LoggerFactory.getLogger ( HiveCommon.class );
@@ -87,7 +109,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private final List<DataItemFactory> factoryList = new CopyOnWriteArrayList<DataItemFactory> ();
 
-    private final SubscriptionManager itemSubscriptionManager = new SubscriptionManager ();
+    private ListenableSubscriptionManager<String> itemSubscriptionManager;
 
     private final Set<DataItemValidator> itemValidators = new CopyOnWriteArraySet<DataItemValidator> ();
 
@@ -114,6 +136,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private boolean running;
 
+    private SubscriptionValidator<String> subscriptionValidator;
+
     public HiveCommon ()
     {
         final ReentrantReadWriteLock itemMapLock = new ReentrantReadWriteLock ( Boolean.getBoolean ( "org.eclipse.scada.da.server.common.fairItemMapLock" ) );
@@ -121,16 +145,28 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
         this.itemMapReadLock = itemMapLock.readLock ();
         this.itemMapWriteLock = itemMapLock.writeLock ();
 
-        // set the validator of the subscription manager
-        this.itemSubscriptionManager.setValidator ( new SubscriptionValidator () {
+        this.subscriptionValidator = new SubscriptionValidator<String> () {
 
             @Override
-            public boolean validate ( final SubscriptionListener listener, final Object topic )
+            public boolean validate ( final SubscriptionListener<String> listener, final String topic )
             {
-                return validateItem ( topic.toString () );
+                return validateItem ( topic );
             }
-        } );
+        };
+    }
 
+    protected void addItemSubscriptionListener ( final SubscriptionManagerListener<String> listener )
+    {
+        checkRunning ();
+
+        this.itemSubscriptionManager.addManagerListener ( listener );
+    }
+
+    protected void removeItemSubscriptionListener ( final SubscriptionManagerListener<String> listener )
+    {
+        checkRunning ();
+
+        this.itemSubscriptionManager.removeManagerListener ( listener );
     }
 
     @Override
@@ -146,14 +182,52 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
             this.running = true;
         }
 
+        this.operationService = Executors.newFixedThreadPool ( 1, new NamedThreadFactory ( "HiveCommon/" + getHiveId () ) );
+        this.itemSubscriptionManager = new ListenableSubscriptionManager<String> ( this.operationService, this.subscriptionValidator );
+
         if ( this.autoEnableStats && this.rootFolder instanceof FolderCommon )
         {
             enableStats ( (FolderCommon)this.rootFolder );
         }
 
-        this.operationService = Executors.newFixedThreadPool ( 1, new NamedThreadFactory ( "HiveCommon/" + getHiveId () ) );
-
         performStart ();
+    }
+
+    @Override
+    public void stop () throws Exception
+    {
+        logger.info ( "Stopping hive" );
+
+        synchronized ( this )
+        {
+            if ( !this.running )
+            {
+                return;
+            }
+            this.running = false;
+        }
+
+        performStop ();
+
+        disableStats ();
+
+        if ( this.browser != null )
+        {
+            this.browser.stop ();
+            this.browser = null;
+        }
+
+        if ( this.itemSubscriptionManager != null )
+        {
+            this.itemSubscriptionManager.dispose ();
+            this.itemSubscriptionManager = null;
+        }
+
+        if ( this.operationService != null )
+        {
+            this.operationService.shutdown ();
+            this.operationService = null;
+        }
     }
 
     /**
@@ -184,37 +258,6 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
      * @return a unique id of you hive type
      */
     public abstract String getHiveId ();
-
-    @Override
-    public void stop () throws Exception
-    {
-        logger.info ( "Stopping hive" );
-
-        synchronized ( this )
-        {
-            if ( !this.running )
-            {
-                return;
-            }
-            this.running = false;
-        }
-
-        performStop ();
-
-        disableStats ();
-
-        if ( this.browser != null )
-        {
-            this.browser.stop ();
-            this.browser = null;
-        }
-
-        if ( this.operationService != null )
-        {
-            this.operationService.shutdown ();
-            this.operationService = null;
-        }
-    }
 
     public void addSessionListener ( final SessionListener listener )
     {
@@ -345,6 +388,11 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     @Override
     public NotifyFuture<Session> createSession ( final Properties properties, final CallbackHandler callbackHandler )
     {
+        if ( !this.running )
+        {
+            return new InstantErrorFuture<> ( makeCheckRunningException () );
+        }
+
         final NotifyFuture<UserInformation> loginFuture = loginUser ( properties, callbackHandler );
 
         return new CallingFuture<UserInformation, Session> ( loginFuture ) {
@@ -394,6 +442,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     {
         final SessionCommon sessionCommon = validateSession ( session );
 
+        checkRunning ();
+
         synchronized ( this.sessions )
         {
             this.sessions.remove ( session );
@@ -413,6 +463,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     public void subscribeItem ( final Session session, final String itemId ) throws InvalidSessionException, InvalidItemException
     {
         logger.debug ( "Subscribing item: {}", itemId );
+
+        checkRunning ();
 
         // validate the session first
         final SessionCommon sessionCommon = validateSession ( session );
@@ -439,14 +491,33 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     {
         logger.debug ( "Unsubscribing item: {}", itemId );
 
+        checkRunning ();
+
         final SessionCommon sessionCommon = validateSession ( session );
 
         // unsubscribe using the new item subscription manager
         this.itemSubscriptionManager.unsubscribe ( itemId, sessionCommon );
     }
 
+    private void checkRunning ()
+    {
+        if ( !this.running )
+        {
+            throw makeCheckRunningException ();
+        }
+    }
+
+    private static IllegalStateException makeCheckRunningException ()
+    {
+        return new IllegalStateException ( "Hive is not running running. Start it first!" );
+    }
+
     /**
      * Register a new item with the hive
+     * <p>
+     * Note that registering an item is only possible after the Hive has been
+     * started.
+     * </p>
      * 
      * @param item
      *            the item to register
@@ -454,6 +525,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     public void registerItem ( final DataItem item )
     {
         logger.debug ( "Register item: {}", item );
+
+        checkRunning ();
 
         try
         {
@@ -487,6 +560,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private Executor getOperationServiceInstance ()
     {
+        checkRunning ();
+
         return this.operationService;
     }
 
@@ -508,6 +583,10 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     /**
      * Remove an item from the hive.
+     * <p>
+     * Note that registering an item is only possible while the hive is running
+     * (started, not stopped).
+     * </p>
      * 
      * @param item
      *            the item to remove
@@ -515,6 +594,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     public void unregisterItem ( final DataItem item )
     {
         logger.debug ( "Unregister item: {}", item );
+
+        checkRunning ();
 
         try
         {
@@ -715,9 +796,6 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
         };
     }
 
-    /**
-     * @since 1.1
-     */
     protected NotifyFuture<WriteResult> processWrite ( final SessionCommon session, final String itemId, final Variant value, final org.eclipse.scada.core.server.OperationParameters effectiveOperationParameters )
     {
         logger.debug ( "Processing write - granted - itemId: {}, value: {}", itemId, value );
@@ -787,15 +865,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
      */
     public Set<String> getGrantedItems ()
     {
-        final List<Object> topics = this.itemSubscriptionManager.getAllGrantedTopics ();
-
-        final Set<String> items = new HashSet<String> ( topics.size () );
-
-        for ( final Object topic : topics )
-        {
-            items.add ( topic.toString () );
-        }
-        return items;
+        return this.itemSubscriptionManager.getAllGrantedTopics ();
     }
 
     public void addDataItemValidator ( final DataItemValidator dataItemValidator )
