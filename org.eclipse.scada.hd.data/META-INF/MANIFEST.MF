@@ -1,11 +1,13 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse SCADA HD Data (Incubation)
-Bundle-SymbolicName: org.eclipse.scada.hd.data
-Bundle-Version: 0.1.0.qualifier
+Export-Package: org.eclipse.scada.hd.data;version="0.1.0",org.eclipse.
+ scada.hd.data.message;version="0.1.0";uses:="org.eclipse.scada.hd.dat
+ a,org.eclipse.scada.core.data"
 Bundle-Vendor: Eclipse SCADA Project
-Export-Package: org.eclipse.scada.hd.data;version="0.1.0",
- org.eclipse.scada.hd.data.message;version="0.1.0";uses:="org.eclipse.scada.hd.data,org.eclipse.scada.core.data"
+Bundle-Version: 0.1.0.v20140312-1603
+Bundle-Name: Eclipse SCADA HD Data (Incubation)
+Bundle-ManifestVersion: 2
+Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
+ da.core.data;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.data
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.scada.core;version="0.1.0",
- org.eclipse.scada.core.data;version="0.1.0"
+

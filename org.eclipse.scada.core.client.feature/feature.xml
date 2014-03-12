@@ -1,12 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature
-      id="org.eclipse.scada.core.client"
-      label="%featureName"
-      version="0.1.0.qualifier"
-      provider-name="%providerName"
-      plugin="org.eclipse.scada.core"
-      license-feature="org.eclipse.scada.license"
-      license-feature-version="0.1.0.qualifier">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.eclipse.scada.core.client" label="%featureName" license-feature="org.eclipse.scada.license" license-feature-version="0.1.0.qualifier" plugin="org.eclipse.scada.core" provider-name="%providerName" version="0.1.0.v20140312-1603">
 
    <description>
       %description
@@ -28,176 +20,56 @@
    
    
 
-   <plugin
-         id="org.eclipse.scada.core.client"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.client" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.core.client.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.client.common" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.core.client.connection.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.client.connection.service" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.core.client.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.client.net" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.core.client.ngp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.client.ngp" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.core.connection.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.core.connection.provider" install-size="0" unpack="false" version="0.0.0"/>
          
 
-   <plugin
-         id="org.eclipse.scada.ca.client"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ca.client" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.ca.client.ngp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ca.client.ngp" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.ca.connection.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ca.connection.provider" install-size="0" unpack="false" version="0.0.0"/>
 
 
-   <plugin
-         id="org.eclipse.scada.da.client"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.client" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.da.client.connection.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.client.connection.service" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.da.client.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.client.net" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.da.client.ngp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.client.ngp" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.da.connection.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.connection.provider" install-size="0" unpack="false" version="0.0.0"/>
          
-   <plugin
-         id="org.eclipse.scada.ae.client.connection.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ae.client.connection.service" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.ae.client.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ae.client.net" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.ae.client.ngp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ae.client.ngp" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.ae.connection.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.ae.connection.provider" install-size="0" unpack="false" version="0.0.0"/>
          
 
-   <plugin
-         id="org.eclipse.scada.hd.client.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.hd.client.common" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.hd.client.connection.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.hd.client.connection.service" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.hd.client.net"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.hd.client.net" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.hd.client.ngp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.hd.client.ngp" install-size="0" unpack="false" version="0.0.0"/>
 
-   <plugin
-         id="org.eclipse.scada.hd.connection.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.hd.connection.provider" install-size="0" unpack="false" version="0.0.0"/>
                   
-   <plugin
-         id="org.eclipse.scada.da.client.sfp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <plugin download-size="0" id="org.eclipse.scada.da.client.sfp" install-size="0" unpack="false" version="0.0.0"/>
 
 
 </feature>
