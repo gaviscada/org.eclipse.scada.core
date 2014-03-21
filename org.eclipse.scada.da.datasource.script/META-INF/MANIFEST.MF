@@ -1,28 +1,36 @@
 Manifest-Version: 1.0
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140228-1515
-Bundle-Name: Eclipse SCADA DA Script DataSource (Incubation)
-Bundle-Activator: org.eclipse.scada.da.datasource.script.Activator
 Bundle-ManifestVersion: 2
-Import-Package: javax.script,org.eclipse.scada.ae.event;version="0.1.0
- ",org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada.ca.common.fa
- ctory;version="0.1.0",org.eclipse.scada.core;version="0.1.0",org.ecli
- pse.scada.core.client;version="0.1.0",org.eclipse.scada.core.connecti
- on.provider;version="0.1.0",org.eclipse.scada.core.data;version="0.1.
- 0",org.eclipse.scada.core.server;version="0.1.0",org.eclipse.scada.co
- re.subscription;version="0.1.0",org.eclipse.scada.da.client;version="
- 0.1.0",org.eclipse.scada.da.connection.provider;version="0.1.0",org.e
- clipse.scada.da.core;version="0.1.0",org.eclipse.scada.da.datasource;
- version="0.1.0",org.eclipse.scada.da.datasource.base;version="0.1.0",
- org.eclipse.scada.da.server.browser.common;version="0.1.0",org.eclips
- e.scada.da.server.common;version="0.1.0",org.eclipse.scada.da.server.
- common.impl;version="0.1.0",org.eclipse.scada.sec;version="0.1.0",org
- .eclipse.scada.utils.concurrent;version="0.1.0",org.eclipse.scada.uti
- ls.concurrent.task;version="0.1.0",org.eclipse.scada.utils.exec;versi
- on="0.1.0",org.eclipse.scada.utils.osgi;version="0.1.0",org.eclipse.s
- cada.utils.osgi.pool;version="0.1.0",org.eclipse.scada.utils.script;v
- ersion="0.1.0",org.osgi.framework;version="1.6.0",org.osgi.util.track
- er;version="1.4.0",org.slf4j;version="1.5.0"
+Bundle-Name: Eclipse SCADA DA Script DataSource (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.da.datasource.script
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.eclipse.scada.da.datasource.script.Activator
+Bundle-Vendor: Eclipse SCADA Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: javax.script,
+ org.eclipse.scada.ae.event;version="0.1.0",
+ org.eclipse.scada.ca;version="0.1.0",
+ org.eclipse.scada.ca.common.factory;version="0.1.0",
+ org.eclipse.scada.core;version="0.1.0",
+ org.eclipse.scada.core.client;version="0.1.0",
+ org.eclipse.scada.core.connection.provider;version="0.1.0",
+ org.eclipse.scada.core.data;version="0.1.0",
+ org.eclipse.scada.core.server;version="0.1.0",
+ org.eclipse.scada.core.subscription;version="0.1.0",
+ org.eclipse.scada.da.client;version="0.1.0",
+ org.eclipse.scada.da.connection.provider;version="0.1.0",
+ org.eclipse.scada.da.core;version="0.1.0",
+ org.eclipse.scada.da.datasource;version="0.1.0",
+ org.eclipse.scada.da.datasource.base;version="0.1.0",
+ org.eclipse.scada.da.server.browser.common;version="0.1.0",
+ org.eclipse.scada.da.server.common;version="0.1.0",
+ org.eclipse.scada.da.server.common.impl;version="0.1.0",
+ org.eclipse.scada.sec;version="0.1.0",
+ org.eclipse.scada.utils.concurrent;version="0.1.0",
+ org.eclipse.scada.utils.concurrent.task;version="0.1.0",
+ org.eclipse.scada.utils.exec;version="0.1.0",
+ org.eclipse.scada.utils.osgi;version="0.1.0",
+ org.eclipse.scada.utils.osgi.pool;version="0.1.0",
+ org.eclipse.scada.utils.script;version="0.1.0",
+ org.osgi.framework;version="1.6.0",
+ org.osgi.util.tracker;version="1.4.0",
+ org.slf4j;version="1.5.0"

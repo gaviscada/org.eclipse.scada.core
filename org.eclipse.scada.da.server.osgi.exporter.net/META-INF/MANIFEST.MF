@@ -1,19 +1,21 @@
 Manifest-Version: 1.0
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140228-1657
-Bundle-Name: Eclipse SCADA DA Net Exporter Plug-in (Incubation)
-Bundle-Activator: org.eclipse.scada.da.server.osgi.exporter.net.Activa
- tor
 Bundle-ManifestVersion: 2
-Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
- da.core.net;version="0.1.0",org.eclipse.scada.core.server.exporter;ve
- rsion="0.1.0",org.eclipse.scada.core.server.net;version="0.1.0",org.e
- clipse.scada.da.core.server;version="0.1.0",org.eclipse.scada.da.serv
- er.common;version="0.1.0",org.eclipse.scada.da.server.common.exporter
- ;version="0.1.0",org.eclipse.scada.da.server.common.impl;version="0.1
- .0",org.eclipse.scada.da.server.net;version="0.1.0",org.eclipse.scada
- .utils;version="0.1.0",org.eclipse.scada.utils.lifecycle;version="0.1
- .0",org.osgi.framework;version="1.6.0",org.slf4j;version="1.5.0"
+Bundle-Name: Eclipse SCADA DA Net Exporter Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.da.server.osgi.exporter.net
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.eclipse.scada.da.server.osgi.exporter.net.Activator
+Bundle-Vendor: Eclipse SCADA Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: org.eclipse.scada.core;version="0.1.0",
+ org.eclipse.scada.core.net;version="0.1.0",
+ org.eclipse.scada.core.server.exporter;version="0.1.0",
+ org.eclipse.scada.core.server.net;version="0.1.0",
+ org.eclipse.scada.da.core.server;version="0.1.0",
+ org.eclipse.scada.da.server.common;version="0.1.0",
+ org.eclipse.scada.da.server.common.exporter;version="0.1.0",
+ org.eclipse.scada.da.server.common.impl;version="0.1.0",
+ org.eclipse.scada.da.server.net;version="0.1.0",
+ org.eclipse.scada.utils;version="0.1.0",
+ org.eclipse.scada.utils.lifecycle;version="0.1.0",
+ org.osgi.framework;version="1.6.0",
+ org.slf4j;version="1.5.0"

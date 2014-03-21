@@ -1,20 +1,24 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.core.server.net;version="0.1.0"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140312-1603
-Bundle-Name: Eclipse SCADA Core Server NET (Incubation)
 Bundle-ManifestVersion: 2
-Import-Package: org.apache.mina.core.filterchain;version="2.0.2",org.a
- pache.mina.core.future;version="2.0.2",org.apache.mina.core.service;v
- ersion="2.0.2",org.apache.mina.core.session;version="2.0.2",org.apach
- e.mina.handler.multiton;version="2.0.2",org.eclipse.scada.core;versio
- n="0.1.0",org.eclipse.scada.utils.stats;version="0.1.0",org.eclipse.s
- cada.core.net;version="0.1.0",org.eclipse.scada.core.server.common;ve
- rsion="0.1.0",org.eclipse.scada.core.server.common.stats;version="0.1
- .0",org.eclipse.scada.core.server.net;version="0.1.0",org.eclipse.sca
- da.net;version="0.1.0",org.eclipse.scada.net.base;version="0.1.0",org
- .eclipse.scada.net.base.data;version="0.1.0",org.eclipse.scada.net.mi
- na;version="0.1.0",org.slf4j;version="1.5.0"
+Bundle-Name: Eclipse SCADA Core Server NET (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.core.server.net
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.core.server.net;version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: org.apache.mina.core.filterchain;version="2.0.2",
+ org.apache.mina.core.future;version="2.0.2",
+ org.apache.mina.core.service;version="2.0.2",
+ org.apache.mina.core.session;version="2.0.2",
+ org.apache.mina.handler.multiton;version="2.0.2",
+ org.eclipse.scada.core;version="0.1.0",
+ org.eclipse.scada.utils.stats;version="0.1.0",
+ org.eclipse.scada.core.net;version="0.1.0",
+ org.eclipse.scada.core.server.common;version="0.1.0",
+ org.eclipse.scada.core.server.common.stats;version="0.1.0",
+ org.eclipse.scada.core.server.net;version="0.1.0",
+ org.eclipse.scada.net;version="0.1.0",
+ org.eclipse.scada.net.base;version="0.1.0",
+ org.eclipse.scada.net.base.data;version="0.1.0",
+ org.eclipse.scada.net.mina;version="0.1.0",
+ org.slf4j;version="1.5.0"
