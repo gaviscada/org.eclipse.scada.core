@@ -1,16 +1,14 @@
 Manifest-Version: 1.0
-Export-Package: org.eclipse.scada.protocol.sfp;version="0.1.0";uses:="
- org.apache.mina.core.session,org.apache.mina.core.buffer,org.apache.m
- ina.filter.codec",org.eclipse.scada.protocol.sfp.messages;version="0.
- 1.0";uses:="org.eclipse.scada.core"
-Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140321-1022
-Bundle-Name: Eclipse SCADA Small Footprint Protocol (Incubation)
 Bundle-ManifestVersion: 2
-Import-Package: org.apache.mina.core.buffer;version="2.0.2",org.apache
- .mina.core.session;version="2.0.2",org.apache.mina.filter.codec;versi
- on="2.0.2",org.eclipse.scada.core;version="0.1.0",org.slf4j;version="
- 1.7.0"
+Bundle-Name: Eclipse SCADA Small Footprint Protocol (Incubation)
 Bundle-SymbolicName: org.eclipse.scada.protocol.sfp
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Eclipse SCADA Project
+Export-Package: org.eclipse.scada.protocol.sfp;version="0.1.0";uses:="org.apache.mina.core.session,org.apache.mina.core.buffer,org.apache.mina.filter.codec",
+ org.eclipse.scada.protocol.sfp.messages;version="0.1.0";uses:="org.eclipse.scada.core"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-
+Import-Package: org.apache.mina.core.buffer;version="2.0.2",
+ org.apache.mina.core.session;version="2.0.2",
+ org.apache.mina.filter.codec;version="2.0.2",
+ org.eclipse.scada.core;version="0.1.0",
+ org.slf4j;version="1.7.0"
