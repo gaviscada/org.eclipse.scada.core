@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1029
+Bundle-Version: 0.1.0.v20140506-1600
 Bundle-Name: Eclipse SCADA HD Common Historical Item (Incubation)
-Bundle-Activator: org.eclipse.scada.hd.server.common.item.Activator
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.eclipse.scada.hd.server.common.item.Activator
+Bundle-SymbolicName: org.eclipse.scada.hd.server.common.item
 Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  .core;version="0.1.0",org.eclipse.scada.da.client;version="0.1.0",org
  .eclipse.scada.da.datasource;version="0.1.0",org.eclipse.scada.da.mas
@@ -14,6 +15,5 @@ Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  "0.1.0",org.eclipse.scada.utils.osgi.pool;version="0.1.0",org.osgi.fr
  amework;version="1.6.0",org.slf4j;version="1.5.8",org.slf4j.profiler;
  version="1.5.8"
-Bundle-SymbolicName: org.eclipse.scada.hd.server.common.item
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

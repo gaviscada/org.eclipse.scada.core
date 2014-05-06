@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.ae.server.exporter;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1029
+Bundle-Version: 0.1.0.v20140506-1600
 Bundle-Name: Eclipse SCADA A&E Server Plug-in (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.ae.server.exporter
 Import-Package: org.eclipse.scada.ae.server;version="0.1.0",org.eclips
  e.scada.ae.server.exporter;version="0.1.0",org.eclipse.scada.core;ver
  sion="0.1.0",org.eclipse.scada.core.server;version="0.1.0",org.eclips
  e.scada.utils.lifecycle;version="0.1.0"
-Bundle-SymbolicName: org.eclipse.scada.ae.server.exporter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

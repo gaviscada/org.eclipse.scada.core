@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1029
+Bundle-Version: 0.1.0.v20140506-1600
 Bundle-Name: Eclipse SCADA AE Meta Information (Incubation)
-Bundle-Activator: org.eclipse.scada.ae.server.info.Activator
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.eclipse.scada.ae.server.info.Activator
+Bundle-SymbolicName: org.eclipse.scada.ae.server.info
 Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  .ae.data;version="0.1.0",org.eclipse.scada.ae.monitor;version="0.1.0"
  ,org.eclipse.scada.ae.server;version="0.1.0",org.eclipse.scada.ae.ser
@@ -19,6 +20,5 @@ Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  sion="0.1.0",org.eclipse.scada.utils.propertyeditors;version="0.1.0",
  org.eclipse.scada.da.server.common;version="0.1.0",org.osgi.framework
  ;version="1.5.0",org.slf4j;version="1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.ae.server.info
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

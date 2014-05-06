@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.core.server.net;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1029
+Bundle-Version: 0.1.0.v20140506-1600
 Bundle-Name: Eclipse SCADA Core Server NET (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.core.server.net
 Import-Package: org.apache.mina.core.filterchain;version="2.0.2",org.a
  pache.mina.core.future;version="2.0.2",org.apache.mina.core.service;v
  ersion="2.0.2",org.apache.mina.core.session;version="2.0.2",org.apach
@@ -15,6 +16,5 @@ Import-Package: org.apache.mina.core.filterchain;version="2.0.2",org.a
  da.net;version="0.1.0",org.eclipse.scada.net.base;version="0.1.0",org
  .eclipse.scada.net.base.data;version="0.1.0",org.eclipse.scada.net.mi
  na;version="0.1.0",org.slf4j;version="1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.core.server.net
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
