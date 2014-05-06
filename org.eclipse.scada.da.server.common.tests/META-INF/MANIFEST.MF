@@ -3,7 +3,7 @@ Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-Vendor: Eclipse SCADA Project
 Fragment-Host: org.eclipse.scada.da.server.common;bundle-version="0.1.
  0"
-Bundle-Version: 0.1.0.v20140430-1536
+Bundle-Version: 0.1.0.v20140506-1029
 Bundle-Name: UnitTest for org.eclipse.scada.da.server.common (Incubati
  on)
 Bundle-ManifestVersion: 2
