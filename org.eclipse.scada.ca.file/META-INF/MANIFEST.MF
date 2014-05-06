@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140430-1526
+Bundle-Version: 0.1.0.v20140430-1536
 Bundle-Name: Eclipse SCADA CA File Plug-in (Incubation)
-Bundle-Activator: org.eclipse.scada.ca.file.Activator
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.eclipse.scada.ca.file.Activator
+Bundle-SymbolicName: org.eclipse.scada.ca.file
 Import-Package: com.google.common.collect;version="10.0.0",org.eclipse
  .scada.ca;version="0.1.0",org.eclipse.scada.ca.common;version="0.1.0"
  ,org.eclipse.scada.ca.data;version="0.1.0",org.eclipse.scada.ca.oscar
@@ -13,6 +14,5 @@ Import-Package: com.google.common.collect;version="10.0.0",org.eclipse
  .0",org.eclipse.scada.utils.str;version="0.1.0",org.osgi.framework;ve
  rsion="1.6.0",org.osgi.util.tracker;version="1.3.0",org.slf4j;version
  ="1.5.0",org.slf4j.profiler;version="1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.ca.file
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.core.server.ngp;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140430-1526
+Bundle-Version: 0.1.0.v20140430-1536
 Bundle-Name: Eclipse SCADA NextGenerationProtocol Core Server (Incubat
  ion)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.core.server.ngp
 Import-Package: javax.net.ssl,org.apache.mina.core.filterchain;version
  ="2.0.2",org.apache.mina.core.polling;version="2.0.2",org.apache.mina
  .core.service;version="2.0.2",org.apache.mina.core.session;version="2
@@ -21,6 +22,5 @@ Import-Package: javax.net.ssl,org.apache.mina.core.filterchain;version
  back;version="0.1.0",org.eclipse.scada.utils.concurrent;version="0.1.
  0",org.eclipse.scada.utils.stats;version="0.1.0",org.eclipse.scada.ut
  ils.statuscodes;version="0.1.0",org.slf4j;version="1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.core.server.ngp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
