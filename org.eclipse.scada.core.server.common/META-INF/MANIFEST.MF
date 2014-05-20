@@ -4,10 +4,9 @@ Export-Package: org.eclipse.scada.core.server.common;version="0.1.0",o
  scada.core.server.common.session;version="0.1.0",org.eclipse.scada.co
  re.server.common.stats;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Eclipse SCADA Core Server Common (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.core.server.common
 Import-Package: javax.management,org.apache.mina.core.service;version=
  "2.0.2",org.eclipse.scada.core;version="0.1.0",org.eclipse.scada.core
  .data;version="0.1.0",org.eclipse.scada.core.server;version="0.1.0",o
@@ -21,5 +20,6 @@ Import-Package: javax.management,org.apache.mina.core.service;version=
  a.utils.stats;version="0.1.0",org.eclipse.scada.utils.statuscodes;ver
  sion="0.1.0",org.osgi.framework;version="1.7.0",org.slf4j;version="1.
  5.0"
+Bundle-SymbolicName: org.eclipse.scada.core.server.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

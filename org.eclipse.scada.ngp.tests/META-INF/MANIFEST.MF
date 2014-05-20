@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Eclipse SCADA NGP Test (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.ngp.tests
 Import-Package: org.apache.mina.core;version="2.0.7",org.apache.mina.c
  ore.buffer;version="2.0.7",org.apache.mina.core.filterchain;version="
  2.0.7",org.apache.mina.core.future;version="2.0.7",org.apache.mina.co
@@ -16,5 +15,6 @@ Import-Package: org.apache.mina.core;version="2.0.7",org.apache.mina.c
  ;version="2.0.7",org.eclipse.scada.core.data;version="0.1.0",org.ecli
  pse.scada.core.data.message;version="0.1.0",org.eclipse.scada.hd.data
  ;version="0.1.0",org.eclipse.scada.hd.data.message;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.ngp.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

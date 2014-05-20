@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Require-Bundle: org.junit;bundle-version="4.11.0",org.eclipse.scada.hd
  .server.storage.common;bundle-version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Unit Test for org.eclipsescada.hd.server.storage.common (
  Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.hd.server.storage.common.tests
 Import-Package: org.eclipse.scada.hd;version="0.1.0",org.eclipse.scada
  .hd.data;version="0.1.0",org.eclipse.scada.utils.str;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.server.storage.common.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

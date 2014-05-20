@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-Vendor: Eclipse SCADA Project
 Fragment-Host: org.eclipse.scada.ae;bundle-version="0.1.0"
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: AE Tests (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.ae.tests
 Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  .ae.filter;version="0.1.0",org.eclipse.scada.ae.filter.internal;versi
  on="0.1.0",org.eclipse.scada.ae.server.storage;version="0.1.0",org.ec
  lipse.scada.ae.server.storage.memory;version="0.1.0",org.eclipse.scad
  a.core;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.ae.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

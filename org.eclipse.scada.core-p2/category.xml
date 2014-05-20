@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><site>
-   <feature id="org.eclipse.scada.core" url="features/org.eclipse.scada.core_0.1.2.qualifier.jar" version="0.1.2.qualifier">
+   <feature id="org.eclipse.scada.core" url="features/org.eclipse.scada.core_0.1.2.v20140520-1156.jar" version="0.1.2.v20140520-1156">
       <category name="org.eclipse.scada.core.category"/>
    </feature>
-   <feature id="org.eclipse.scada.core.sdk" url="features/org.eclipse.scada.core.sdk_0.1.2.qualifier.jar" version="0.1.2.qualifier">
+   <feature id="org.eclipse.scada.core.sdk" url="features/org.eclipse.scada.core.sdk_0.1.2.v20140520-1156.jar" version="0.1.2.v20140520-1156">
       <category name="org.eclipse.scada.core.sdk.category"/>
    </feature>
    <category-def label="Eclipse SCADA Core System (Incubation)" name="org.eclipse.scada.core.category">

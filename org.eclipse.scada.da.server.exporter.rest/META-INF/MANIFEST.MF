@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Service-Component: OSGI-INF/item-resource.xml,OSGI-INF/configuration-f
  actory.xml,OSGI-INF/variant-provider.xml, OSGI-INF/div-provider.xml
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Eclipse SCADA DA Rest Exporter (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.da.server.exporter.rest
 Import-Package: com.google.common.io;version="12.0.0",com.google.gson;
  version="2.1.0",com.google.gson.stream;version="2.1.0",javax.ws.rs;ve
  rsion="1.1.1",javax.ws.rs.core;version="1.1.1",javax.ws.rs.ext;versio
@@ -18,5 +17,6 @@ Import-Package: com.google.common.io;version="12.0.0",com.google.gson;
  a.utils.concurrent;version="0.1.0",org.eclipse.scada.utils.str;versio
  n="0.1.0",org.osgi.framework;version="1.7.0",org.slf4j;version="1.7.2
  "
+Bundle-SymbolicName: org.eclipse.scada.da.server.exporter.rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

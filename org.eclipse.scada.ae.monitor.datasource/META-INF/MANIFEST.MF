@@ -3,11 +3,10 @@ Export-Package: org.eclipse.scada.ae.monitor.datasource;version="0.1.0
  "
 Bundle-Vendor: Eclipse SCADA Project
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Eclipse SCADA AE Datasource Monitors (Incubation)
-Bundle-ManifestVersion: 2
 Bundle-Activator: org.eclipse.scada.ae.monitor.datasource.Activator
-Bundle-SymbolicName: org.eclipse.scada.ae.monitor.datasource
+Bundle-ManifestVersion: 2
 Import-Package: com.google.common.collect;version="10.0.0",org.eclipse
  .scada.ae;version="0.1.0",org.eclipse.scada.ae.data;version="0.1.0",o
  rg.eclipse.scada.ae.event;version="0.1.0",org.eclipse.scada.ae.monito
@@ -27,5 +26,6 @@ Import-Package: com.google.common.collect;version="10.0.0",org.eclipse
  ada.utils.osgi;version="0.1.0",org.eclipse.scada.utils.osgi.pool;vers
  ion="0.1.0",org.osgi.framework;version="1.7.0",org.osgi.util.tracker;
  version="1.5.0",org.slf4j;version="1.5.0"
+Bundle-SymbolicName: org.eclipse.scada.ae.monitor.datasource
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

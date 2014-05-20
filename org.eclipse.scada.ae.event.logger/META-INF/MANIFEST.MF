@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1600
+Bundle-Version: 0.1.0.v20140506-1700
 Bundle-Name: Eclipse SCADA AE Datasource Logger (Incubation)
-Bundle-ManifestVersion: 2
 Bundle-Activator: org.eclipse.scada.ae.event.logger.Activator
-Bundle-SymbolicName: org.eclipse.scada.ae.event.logger
+Bundle-ManifestVersion: 2
 Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  .ae.event;version="0.1.0",org.eclipse.scada.ca;version="0.1.0",org.ec
  lipse.scada.ca.common.factory;version="0.1.0",org.eclipse.scada.core;
@@ -16,5 +15,6 @@ Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  ipse.scada.da.master;version="0.1.0",org.eclipse.scada.sec;version="0
  .1.0",org.eclipse.scada.utils.osgi.pool;version="0.1.0",org.osgi.fram
  ework;version="1.6.0"
+Bundle-SymbolicName: org.eclipse.scada.ae.event.logger
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
