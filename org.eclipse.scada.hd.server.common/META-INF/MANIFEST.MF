@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.hd.server.common;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA HD Common Server (Incubation)
-Bundle-Activator: org.eclipse.scada.hd.server.common.Activator
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.eclipse.scada.hd.server.common.Activator
+Bundle-SymbolicName: org.eclipse.scada.hd.server.common
 Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  .core;version="0.1.0",org.eclipse.scada.core.server;version="0.1.0",o
  rg.eclipse.scada.core.server.common;version="0.1.0",org.eclipse.scada
@@ -17,6 +18,5 @@ Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  cada.utils.statuscodes;version="0.1.0",org.osgi.framework;version="1.
  6.0",org.osgi.util.tracker;version="1.5.0",org.slf4j;version="1.5.8",
  org.slf4j.profiler;version="1.5.8"
-Bundle-SymbolicName: org.eclipse.scada.hd.server.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

@@ -10,6 +10,6 @@
   </parent>
   <groupId>org.eclipse.scada.core</groupId>
   <artifactId>org.eclipse.scada.da.server.common.memory</artifactId>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.1.2.v20140520-1329</version>
   <packaging>eclipse-plugin</packaging>
 </project>

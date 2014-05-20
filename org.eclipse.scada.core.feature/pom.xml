@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.eclipse.scada.core.features</groupId>
   <artifactId>org.eclipse.scada.core</artifactId>
-  <version>0.1.2.v20140520-1156</version>
+  <version>0.1.2.v20140520-1210</version>
   <packaging>eclipse-feature</packaging>
   <build>
     <plugins>

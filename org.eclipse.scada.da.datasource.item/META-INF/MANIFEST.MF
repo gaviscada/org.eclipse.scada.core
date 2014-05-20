@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA DA Item Datasource (Incubation)
-Bundle-Activator: org.eclipse.scada.da.datasource.item.Activator
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.eclipse.scada.da.datasource.item.Activator
+Bundle-SymbolicName: org.eclipse.scada.da.datasource.item
 Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  .ca;version="0.1.0",org.eclipse.scada.ca.common.factory;version="0.1.
  0",org.eclipse.scada.core;version="0.1.0",org.eclipse.scada.core.clie
@@ -24,6 +25,5 @@ Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  clipse.scada.utils.osgi.pool;version="0.1.0",org.eclipse.scada.da.ser
  ver.common.impl;version="0.1.0",org.osgi.framework;version="1.3.0",or
  g.osgi.util.tracker;version="1.4.2",org.slf4j;version="1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.da.datasource.item
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

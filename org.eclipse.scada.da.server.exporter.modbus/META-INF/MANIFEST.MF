@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Service-Component: OSGI-INF/factory.xml
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA DA Modbus Exporter (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.da.server.exporter.modbus
 Import-Package: org.apache.mina.core.buffer;version="2.0.7",org.apache
  .mina.core.filterchain;version="2.0.7",org.apache.mina.core.polling;v
  ersion="2.0.7",org.apache.mina.core.service;version="2.0.7",org.apach
@@ -27,6 +28,5 @@ Import-Package: org.apache.mina.core.buffer;version="2.0.7",org.apache
  0",org.eclipse.scada.utils.osgi;version="0.1.0",org.eclipse.scada.uti
  ls.osgi.pool;version="0.1.0",org.osgi.framework;version="1.7.0",org.s
  lf4j;version="1.7.2"
-Bundle-SymbolicName: org.eclipse.scada.da.server.exporter.modbus
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

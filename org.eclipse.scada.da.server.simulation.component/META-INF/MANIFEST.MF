@@ -3,9 +3,10 @@ Export-Package: org.eclipse.scada.da.server.simulation.component;versi
  on="0.1.0",org.eclipse.scada.da.server.simulation.component.modules;v
  ersion="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA DA Component Simulation Server (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.da.server.simulation.component
 Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
  da.core.data;version="0.1.0",org.eclipse.scada.core.server;version="0
  .1.0",org.eclipse.scada.core.server.common;version="0.1.0",org.eclips
@@ -17,6 +18,5 @@ Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
  on.impl;version="0.1.0",org.eclipse.scada.sec;version="0.1.0",org.ecl
  ipse.scada.utils.collection;version="0.1.0",org.eclipse.scada.utils.c
  oncurrent;version="0.1.0",org.slf4j;version="[1.5.0,2.0.0)"
-Bundle-SymbolicName: org.eclipse.scada.da.server.simulation.component
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

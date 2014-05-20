@@ -5,10 +5,11 @@ Export-Package: org.eclipse.scada.hd.protocol.ngp.codec;version="0.1.0
  g.eclipse.scada.protocol.ngp.common.mc.protocol.osbp,  org.apache.min
  a.core.buffer"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA NextGenerationProtocol HD Codec (Incubation
  )
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.hd.protocol.ngp.codec
 Import-Package: org.apache.mina.core;version="2.0.4",org.apache.mina.c
  ore.buffer;version="2.0.4",org.apache.mina.core.session;version="2.0.
  4",org.apache.mina.filter.codec;version="2.0.4",org.eclipse.scada.cor
@@ -19,6 +20,5 @@ Import-Package: org.apache.mina.core;version="2.0.4",org.apache.mina.c
  .eclipse.scada.protocol.ngp.common.mc.protocol;version="0.1.0",org.ec
  lipse.scada.protocol.ngp.common.utils;version="0.1.0",org.slf4j;versi
  on="1.6.0"
-Bundle-SymbolicName: org.eclipse.scada.hd.protocol.ngp.codec
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

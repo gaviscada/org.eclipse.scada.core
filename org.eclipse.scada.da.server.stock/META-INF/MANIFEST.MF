@@ -4,9 +4,10 @@ Export-Package: org.eclipse.scada.da.server.stock;version="0.1.0",org.
  ada.da.server.stock.domain;version="0.1.0",org.eclipse.scada.da.serve
  r.stock.items;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140506-1700
+Bundle-Version: 0.1.0.v20140520-1210
 Bundle-Name: Eclipse SCADA DA Stock Server (Incubation)
 Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.scada.da.server.stock
 Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
  da.core.data;version="0.1.0",org.eclipse.scada.core.server;version="0
  .1.0",org.eclipse.scada.core.server.common;version="0.1.0",org.eclips
@@ -20,6 +21,5 @@ Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
  ada.sec;version="0.1.0",org.eclipse.scada.utils.collection;version="0
  .1.0",org.eclipse.scada.utils.str;version="0.1.0",org.slf4j;version="
  1.5.0"
-Bundle-SymbolicName: org.eclipse.scada.da.server.stock
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
