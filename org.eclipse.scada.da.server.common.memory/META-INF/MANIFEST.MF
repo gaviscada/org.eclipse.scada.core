@@ -3,7 +3,7 @@ Export-Package: org.eclipse.scada.da.server.common.memory;version="0.1
  .0"
 Bundle-Vendor: Eclipse SCADA Project
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 0.1.0.v20140520-1136
+Bundle-Version: 0.1.2.qualifier
 Bundle-Name: Base functionality for memory block based servers (Incuba
  tion)
 Bundle-Activator: org.eclipse.scada.da.server.common.memory.Activator
