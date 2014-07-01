@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2013 Jens Reimann and others.&#xA;All rights reserved. This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License v1.0&#xA;which accompanies this distribution, and is available at&#xA;http://www.eclipse.org/legal/epl-v10.html&#xA;&#xA;Contributors:&#xA;    Jens Reimann - initial API and implementation"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2014 IBH SYSTEMS GmbH and others.&#xA;All rights reserved. This program and the accompanying materials&#xA;are made available under the terms of the Eclipse Public License v1.0&#xA;which accompanies this distribution, and is available at&#xA;http://www.eclipse.org/legal/epl-v10.html&#xA;&#xA;Contributors:&#xA;    IBH SYSTEMS GmbH - initial API and implementation"
     modelDirectory="/org.eclipse.scada.da.server.jdbc/emfsrc" modelPluginID="org.eclipse.scada.da.server.jdbc"
     modelName="Jdbc" nonNLSMarkers="true" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     codeFormatting="true" importerID="org.eclipse.xsd.ecore.importer" containmentProxies="true"
@@ -18,6 +18,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//AbstractQueryType/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//AbstractQueryType/period"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//AbstractQueryType/sql1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//AbstractQueryType/timeout"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//ColumnMappingType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//ColumnMappingType/aliasName"/>
@@ -29,6 +30,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//CommandsType/sql1"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//ConnectionType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ConnectionType/property"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ConnectionType/query"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ConnectionType/tabularQuery"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//ConnectionType/update"/>
@@ -44,6 +46,10 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference configuration.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference configuration.ecore#//DocumentRoot/xSISchemaLocation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//DocumentRoot/root"/>
+    </genClasses>
+    <genClasses ecoreClass="configuration.ecore#//PropertyEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//PropertyEntry/key"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//PropertyEntry/value"/>
     </genClasses>
     <genClasses ecoreClass="configuration.ecore#//QueryType"/>
     <genClasses ecoreClass="configuration.ecore#//RootType">
@@ -69,6 +75,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference configuration.ecore#//UpdateType/mapping"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//UpdateType/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//UpdateType/sql1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute configuration.ecore#//UpdateType/timeout"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -10,6 +10,7 @@
  */
 package org.eclipse.scada.da.server.jdbc.configuration.impl;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -41,6 +42,7 @@ import org.eclipse.scada.da.server.jdbc.configuration.UpdateType;
  *   <li>{@link org.eclipse.scada.da.server.jdbc.configuration.impl.UpdateTypeImpl#getMapping <em>Mapping</em>}</li>
  *   <li>{@link org.eclipse.scada.da.server.jdbc.configuration.impl.UpdateTypeImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.scada.da.server.jdbc.configuration.impl.UpdateTypeImpl#getSql1 <em>Sql1</em>}</li>
+ *   <li>{@link org.eclipse.scada.da.server.jdbc.configuration.impl.UpdateTypeImpl#getTimeout <em>Timeout</em>}</li>
  * </ul>
  * </p>
  *
@@ -117,6 +119,26 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
      * @ordered
      */
     protected String sql1 = SQL1_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTimeout()
+     * @generated
+     * @ordered
+     */
+    protected static final BigInteger TIMEOUT_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getTimeout() <em>Timeout</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTimeout()
+     * @generated
+     * @ordered
+     */
+    protected BigInteger timeout = TIMEOUT_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -227,6 +249,29 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
      * <!-- end-user-doc -->
      * @generated
      */
+    public BigInteger getTimeout ()
+    {
+        return timeout;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setTimeout ( BigInteger newTimeout )
+    {
+        BigInteger oldTimeout = timeout;
+        timeout = newTimeout;
+        if ( eNotificationRequired () )
+            eNotify ( new ENotificationImpl ( this, Notification.SET, ConfigurationPackage.UPDATE_TYPE__TIMEOUT, oldTimeout, timeout ) );
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove ( InternalEObject otherEnd, int featureID, NotificationChain msgs )
     {
@@ -256,6 +301,8 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
                 return getId ();
             case ConfigurationPackage.UPDATE_TYPE__SQL1:
                 return getSql1 ();
+            case ConfigurationPackage.UPDATE_TYPE__TIMEOUT:
+                return getTimeout ();
         }
         return super.eGet ( featureID, resolve, coreType );
     }
@@ -284,6 +331,9 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
             case ConfigurationPackage.UPDATE_TYPE__SQL1:
                 setSql1 ( (String)newValue );
                 return;
+            case ConfigurationPackage.UPDATE_TYPE__TIMEOUT:
+                setTimeout ( (BigInteger)newValue );
+                return;
         }
         super.eSet ( featureID, newValue );
     }
@@ -310,6 +360,9 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
             case ConfigurationPackage.UPDATE_TYPE__SQL1:
                 setSql1 ( SQL1_EDEFAULT );
                 return;
+            case ConfigurationPackage.UPDATE_TYPE__TIMEOUT:
+                setTimeout ( TIMEOUT_EDEFAULT );
+                return;
         }
         super.eUnset ( featureID );
     }
@@ -332,6 +385,8 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
                 return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals ( id );
             case ConfigurationPackage.UPDATE_TYPE__SQL1:
                 return SQL1_EDEFAULT == null ? sql1 != null : !SQL1_EDEFAULT.equals ( sql1 );
+            case ConfigurationPackage.UPDATE_TYPE__TIMEOUT:
+                return TIMEOUT_EDEFAULT == null ? timeout != null : !TIMEOUT_EDEFAULT.equals ( timeout );
         }
         return super.eIsSet ( featureID );
     }
@@ -354,6 +409,8 @@ public class UpdateTypeImpl extends MinimalEObjectImpl.Container implements Upda
         result.append ( id );
         result.append ( ", sql1: " ); //$NON-NLS-1$
         result.append ( sql1 );
+        result.append ( ", timeout: " ); //$NON-NLS-1$
+        result.append ( timeout );
         result.append ( ')' );
         return result.toString ();
     }

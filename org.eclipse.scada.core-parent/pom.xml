@@ -42,22 +42,22 @@
 				<repository>
 					<id>eclipse.scada.external</id>
 					<layout>p2</layout>
-					<url>https://hudson.eclipse.org/scada/job/org.eclipse.scada.external-master/lastSuccessfulBuild/artifact/output/p2</url>
+					<url>https://hudson.eclipse.org/eclipsescada/job/org.eclipse.scada.external-master/lastSuccessfulBuild/artifact/output/p2</url>
 				</repository>
 				<repository>
 					<id>eclipse.scada.utils</id>
 					<layout>p2</layout>
-					<url>https://hudson.eclipse.org/scada/job/org.eclipse.scada.utils-master/lastSuccessfulBuild/artifact/output/p2</url>
+					<url>https://hudson.eclipse.org/eclipsescada/job/org.eclipse.scada.utils-master/lastSuccessfulBuild/artifact/output/p2</url>
 				</repository>
 				<repository>
 					<id>eclipse.scada.base</id>
 					<layout>p2</layout>
-					<url>https://hudson.eclipse.org/scada/job/org.eclipse.scada.base-master/lastSuccessfulBuild/artifact/output/p2</url>
+					<url>https://hudson.eclipse.org/eclipsescada/job/org.eclipse.scada.base-master/lastSuccessfulBuild/artifact/output/p2</url>
 				</repository>
 				<repository>
 					<id>eclipse.scada.protocols</id>
 					<layout>p2</layout>
-					<url>https://hudson.eclipse.org/scada/job/org.eclipse.scada.protocols-master/lastSuccessfulBuild/artifact/output/p2</url>
+					<url>https://hudson.eclipse.org/eclipsescada/job/org.eclipse.scada.protocols-master/lastSuccessfulBuild/artifact/output/p2</url>
 				</repository>
 			</repositories>
 		</profile>
@@ -134,6 +134,7 @@
 		<module>../org.eclipse.scada.da.datasource.proxy</module>
 		<module>../org.eclipse.scada.da.datasource.script</module>
 		<module>../org.eclipse.scada.da.datasource.sum</module>
+		<module>../org.eclipse.scada.da.datasource.totalizer</module>
 		<module>../org.eclipse.scada.da.mapper</module>
 		<module>../org.eclipse.scada.da.mapper.osgi</module>
 		<module>../org.eclipse.scada.da.master</module>
@@ -146,6 +147,11 @@
 		<module>../org.eclipse.scada.da.server.common.io</module>
 		<module>../org.eclipse.scada.da.server.common.memory</module>
 		<module>../org.eclipse.scada.da.server.common.osgi</module>
+		<module>../org.eclipse.scada.da.server.component</module>
+		<module>../org.eclipse.scada.da.server.component.linux</module>
+		<module>../org.eclipse.scada.da.server.component.parser</module>
+		<module>../org.eclipse.scada.da.server.component.parser.factory</module>
+		<module>../org.eclipse.scada.da.server.component.parser.factory.edit</module>
 		<module>../org.eclipse.scada.da.server.dave</module>
 		<module>../org.eclipse.scada.da.server.exec</module>
 		<module>../org.eclipse.scada.da.server.exec.edit</module>
@@ -156,6 +162,7 @@
 		<module>../org.eclipse.scada.da.server.exporter.osgi</module>
 		<module>../org.eclipse.scada.da.server.io.common</module>
 		<module>../org.eclipse.scada.da.server.jdbc</module>
+		<module>../org.eclipse.scada.da.server.jdbc.edit</module>
 		<module>../org.eclipse.scada.da.server.net</module>
 		<module>../org.eclipse.scada.da.server.ngp</module>
 		<module>../org.eclipse.scada.da.server.osgi</module>
@@ -237,6 +244,7 @@
 		
 		<module>../org.eclipse.scada.da.server.exporter.common</module>
 		<module>../org.eclipse.scada.da.server.exporter.modbus</module>
+		<module>../org.eclipse.scada.da.server.exporter.iec60870</module>
 		<module>../org.eclipse.scada.sec.provider.ca</module>
 		<module>../org.eclipse.scada.da.server.exporter.rest</module>
 		<module>../org.eclipse.scada.core.doc.isv</module>

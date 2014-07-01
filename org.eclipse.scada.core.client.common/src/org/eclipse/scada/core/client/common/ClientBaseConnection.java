@@ -8,7 +8,7 @@
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
- *     IBH SYSTESM GmbH - add dispose to filter chain
+ *     IBH SYSTEMS GmbH - add dispose to filter chain, add address cache flag
  *******************************************************************************/
 package org.eclipse.scada.core.client.common;
 
@@ -23,8 +23,11 @@ import javax.net.ssl.SSLSession;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.service.IoHandler;
+import org.apache.mina.core.service.IoProcessor;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.ssl.SslFilter;
+import org.apache.mina.transport.socket.SocketConnector;
+import org.apache.mina.transport.socket.nio.NioSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.eclipse.scada.core.ConnectionInformation;
 import org.eclipse.scada.core.client.Connection;
@@ -44,6 +47,8 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
     private final static Logger logger = LoggerFactory.getLogger ( ClientBaseConnection.class );
 
+    private static final Object STATS_CACHE_ADDRESS = new Object ();
+
     private static final Object STATS_CURRENT_STATE = new Object ();
 
     private static final Object STATS_CONNECT_CALLS = new Object ();
@@ -60,11 +65,11 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
     private static final Object STATS_LAST_BOUND_TIMESTAMP = new Object ();
 
-    private final NioSocketConnector connector;
+    private final SocketConnector connector;
 
     private volatile ConnectionState connectionState = ConnectionState.CLOSED;
 
-    private InetAddress address;
+    private InetAddress addressCache;
 
     private ConnectFuture connectFuture;
 
@@ -88,7 +93,14 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
     private volatile boolean disposed;
 
+    private final boolean cacheAddress = Boolean.getBoolean ( "org.eclipse.scada.core.client.common.cacheAddress" );
+
     public ClientBaseConnection ( final IoHandlerFactory handlerFactory, final IoLoggerFilterChainBuilder chainBuilder, final ConnectionInformation connectionInformation ) throws Exception
+    {
+        this ( handlerFactory, chainBuilder, connectionInformation, null );
+    }
+
+    protected ClientBaseConnection ( final IoHandlerFactory handlerFactory, final IoLoggerFilterChainBuilder chainBuilder, final ConnectionInformation connectionInformation, final IoProcessor<NioSession> processor ) throws Exception
     {
         super ( connectionInformation );
 
@@ -96,13 +108,23 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
         this.handler = handlerFactory.create ( this );
 
-        this.connector = new NioSocketConnector ();
+        if ( processor != null )
+        {
+            this.connector = new NioSocketConnector ( processor );
+        }
+        else
+        {
+            this.connector = new NioSocketConnector ();
+        }
 
         this.chainBuilder = chainBuilder;
         this.chainBuilder.setLoggerName ( ClientBaseConnection.class.getName () + ".protocol" );
 
         this.connector.setFilterChainBuilder ( this.chainBuilder );
         this.connector.setHandler ( this.handler );
+
+        this.statistics.setLabel ( STATS_CACHE_ADDRESS, "Flag if the IP address gets cached" );
+        this.statistics.setCurrentValue ( STATS_CACHE_ADDRESS, this.cacheAddress ? 1.0 : 0.0 );
 
         this.statistics.setLabel ( STATS_CURRENT_STATE, "Numeric connection state" );
         this.statistics.setLabel ( STATS_CONNECT_CALLS, "Calls to connect" );
@@ -309,10 +331,13 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
     protected synchronized void performDisconnected ( final Throwable error )
     {
+        logger.debug ( "Perform disconnected", error );
+
         this.connectCallbackHandler = null;
 
         if ( this.session != null )
         {
+            logger.debug ( "Clear session" );
             this.session.close ( true );
             this.session.removeAttribute ( StatisticsFilter.STATS_KEY );
             this.session = null;
@@ -333,20 +358,23 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
     private void initConnect ()
     {
-        if ( this.address == null )
+        if ( this.addressCache == null )
         {
             beginLookup ();
         }
         else
         {
-            startConnect ();
+            startConnect ( this.addressCache );
         }
     }
 
-    private synchronized void startConnect ()
+    private synchronized void startConnect ( final InetAddress address )
     {
+        logger.debug ( "Start connection to {}", address );
+
         setState ( ConnectionState.CONNECTING, null );
-        this.connectFuture = this.connector.connect ( new InetSocketAddress ( this.address, this.connectionInformation.getSecondaryTarget () ) );
+        this.connectFuture = this.connector.connect ( new InetSocketAddress ( address, this.connectionInformation.getSecondaryTarget () ) );
+        logger.trace ( "Returned from connect call" );
         this.connectFuture.addListener ( new IoFutureListener<ConnectFuture> () {
 
             @Override
@@ -355,10 +383,13 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
                 handleConnectComplete ( future );
             }
         } );
+        logger.trace ( "Future listener registered" );
     }
 
     protected synchronized void handleConnectComplete ( final ConnectFuture future )
     {
+        logger.debug ( "Connection attempt complete: {}", future );
+
         if ( this.connectFuture != future )
         {
             logger.warn ( "handleConnectComplete got called with wrong future - current: {}, called: {}", this.connectFuture, future );
@@ -382,10 +413,14 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
         {
             setState ( ConnectionState.CLOSED, e );
         }
+
+        logger.debug ( "Connection established" );
     }
 
     private void setSession ( final IoSession session )
     {
+        logger.debug ( "Setting session: {}", session );
+
         if ( this.session != null )
         {
             logger.warn ( "Failed to set session ... there is still one set" );
@@ -444,9 +479,12 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
 
         if ( address != null )
         {
-            this.address = address;
+            if ( this.cacheAddress )
+            {
+                this.addressCache = address;
+            }
             // trigger connect
-            startConnect ();
+            startConnect ( address );
         }
         else
         {
@@ -470,6 +508,7 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
         this.stateNotifier.dispose ();
 
         this.connector.dispose ();
+
         super.dispose ();
 
         this.chainBuilder.dispose ();
@@ -527,7 +566,7 @@ public abstract class ClientBaseConnection extends BaseConnection implements Con
     {
         if ( this.session != session )
         {
-            logger.warn ( "Received 'opened' from wrong session" );
+            logger.warn ( "Received 'opened' from wrong session (ours: {}, theirs: {})", this.session, session );
             return;
         }
         switchState ( ConnectionState.CONNECTED, null );

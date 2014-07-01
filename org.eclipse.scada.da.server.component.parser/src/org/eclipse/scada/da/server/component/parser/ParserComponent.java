@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBH SYSTEMS GmbH Corporation and others.
+ * Copyright (c) 2014 IBH SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,13 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 import org.eclipse.scada.base.extractor.extract.Extractor;
+import org.eclipse.scada.base.extractor.extract.Extractor.Result;
 import org.eclipse.scada.base.extractor.extract.ItemDescriptor;
 import org.eclipse.scada.base.extractor.extract.ItemValue;
-import org.eclipse.scada.base.extractor.extract.Extractor.Result;
 import org.eclipse.scada.base.extractor.input.Data;
 import org.eclipse.scada.base.extractor.input.Input;
 import org.eclipse.scada.base.extractor.input.Input.Listener;
+import org.eclipse.scada.core.Variant;
 import org.eclipse.scada.da.server.browser.common.FolderCommon;
 import org.eclipse.scada.da.server.browser.common.query.GroupFolder;
 import org.eclipse.scada.da.server.browser.common.query.IDNameProvider;
@@ -35,6 +36,7 @@ import org.eclipse.scada.da.server.common.chain.DataItemInputChained;
 import org.eclipse.scada.da.server.component.Component;
 import org.eclipse.scada.da.server.component.ComponentItemFactory;
 import org.eclipse.scada.da.server.component.Hive;
+import org.eclipse.scada.utils.ExceptionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +54,11 @@ public abstract class ParserComponent extends Component
 
     private final GroupFolder groupFolder;
 
-    private final Map<String, DataItemInputChained> itemCache = new HashMap<> ();
+    private final Map<Extractor, Map<String, DataItemInputChained>> itemCache = new HashMap<> ();
 
     private ComponentItemFactory itemFactory;
+
+    private Variant lastError;
 
     public ParserComponent ( final Executor executor, final Hive hive, final FolderCommon folder, final String activationPrefix )
     {
@@ -63,7 +67,7 @@ public abstract class ParserComponent extends Component
         this.prefix = activationPrefix;
         this.storage = new InvisibleStorage ();
 
-        this.groupFolder = new GroupFolder ( new SplitGroupProvider ( new IDNameProvider (), "\\.", 2, 1 ), new SplitNameProvider ( new IDNameProvider (), "\\.", 0, 1, "." ), folder );
+        this.groupFolder = new GroupFolder ( new SplitGroupProvider ( new IDNameProvider (), "\\.", 1, 1 ), new SplitNameProvider ( new IDNameProvider (), "\\.", 0, 1, "." ), folder );
         this.storage.addChild ( this.groupFolder );
     }
 
@@ -75,49 +79,137 @@ public abstract class ParserComponent extends Component
             @Override
             public void processInput ( final Data data )
             {
-                processResult ( extractor.processData ( data ), prefix );
+                processResult ( extractor, extractor.processData ( data ), prefix );
             }
         } );
     }
 
-    protected void processResult ( final Result result, final String prefix )
+    protected synchronized void processResult ( final Extractor extractor, final Result result, final String prefix )
     {
-        if ( result.getError () != null || result.getItemValues () == null )
+        logger.trace ( "Process result: {} from: {} ({})", result, extractor, prefix );
+
+        try
         {
-            setError ( prefix, result.getError () != null ? result.getError () : new IllegalStateException ( "No data" ) );
-            setValues ( prefix, Collections.<ItemDescriptor, ItemValue> emptyMap () );
+            if ( result.getError () != null )
+            {
+                setError ( extractor, prefix, result.getError () != null ? result.getError () : new IllegalStateException ( "No data" ), result.getItemValues () );
+            }
+            else
+            {
+                setValues ( extractor, prefix, result.getItemValues () != null ? result.getItemValues () : Collections.<ItemDescriptor, ItemValue> emptyMap () );
+            }
         }
-        else
+        catch ( final Exception e )
         {
-            setError ( prefix, null );
-            setValues ( prefix, result.getItemValues () );
+            logger.warn ( "Failed process result", e );
         }
     }
 
-    private void setError ( final String prefix, final Throwable throwable )
+    private void setError ( final Extractor extractor, final String prefix, final Throwable throwable, final Map<ItemDescriptor, ItemValue> items )
     {
-        // setItem = ExceptionHelper.formatted ( throwable );
+        if ( this.lastError == null )
+        {
+            this.lastError = Variant.valueOf ( System.currentTimeMillis () );
+        }
+
+        Map<String, DataItemInputChained> cache = this.itemCache.get ( extractor );
+
+        if ( cache == null )
+        {
+            cache = new HashMap<> ();
+            this.itemCache.put ( extractor, cache );
+        }
+
+        // if this is the first error we might need to create the items first
+        if ( items != null )
+        {
+            for ( final ItemDescriptor descriptor : items.keySet () )
+            {
+                final String localId = makeId ( prefix, descriptor.getLocalId () );
+                getOrCreateItem ( extractor, prefix, cache, descriptor, localId );
+            }
+        }
+
+        final Map<String, Variant> attributes = new HashMap<> ();
+        attributes.put ( "parser.error", Variant.TRUE );
+        attributes.put ( "parser.error.message", Variant.valueOf ( ExceptionHelper.extractMessage ( throwable ) ) );
+        attributes.put ( "timestamp", this.lastError );
+
+        // we iterate over all items now, recently created and old ones
+        for ( final DataItemInputChained item : cache.values () )
+        {
+            item.updateData ( Variant.NULL, attributes, AttributeMode.SET );
+        }
     }
 
-    private void setValues ( final String prefix, final Map<ItemDescriptor, ItemValue> itemValues )
+    private void setValues ( final Extractor extractor, final String prefix, final Map<ItemDescriptor, ItemValue> itemValues )
     {
+        this.lastError = null;
+
+        Map<String, DataItemInputChained> cache = this.itemCache.get ( extractor );
+        if ( cache == null )
+        {
+            cache = new HashMap<> ();
+            this.itemCache.put ( extractor, cache );
+        }
+
+        final Set<String> keys = new HashSet<> ( cache.keySet () );
+
         for ( final Map.Entry<ItemDescriptor, ItemValue> entry : itemValues.entrySet () )
         {
             final String localId = makeId ( prefix, entry.getKey ().getLocalId () );
-            DataItemInputChained item = this.itemCache.get ( localId );
-            if ( item == null )
-            {
-                item = createItem ( prefix, entry.getKey () );
-            }
+
+            final DataItemInputChained item = getOrCreateItem ( extractor, prefix, cache, entry.getKey (), localId );
+            keys.remove ( localId );
             item.updateData ( entry.getValue ().getValue (), entry.getValue ().getAttributes (), AttributeMode.SET );
+        }
+
+        // remove remaining items
+        for ( final String remove : keys )
+        {
+            disposeItem ( extractor, remove );
         }
     }
 
-    private DataItemInputChained createItem ( final String prefix, final ItemDescriptor descriptor )
+    private DataItemInputChained getOrCreateItem ( final Extractor extractor, final String prefix, final Map<String, DataItemInputChained> cache, final ItemDescriptor descriptor, final String localId )
+    {
+        DataItemInputChained item = cache.get ( localId );
+        if ( item == null )
+        {
+            item = createItem ( extractor, prefix, descriptor );
+        }
+        return item;
+    }
+
+    private void disposeItem ( final Extractor extractor, final String localId )
+    {
+        logger.debug ( "Dispose item: {}", localId );
+
+        final Map<String, DataItemInputChained> cache = this.itemCache.get ( extractor );
+        final DataItemInputChained item = cache.remove ( localId );
+        if ( item == null )
+        {
+            logger.debug ( "Item not found" );
+            return;
+        }
+
+        this.storage.removed ( new org.eclipse.scada.da.server.browser.common.query.ItemDescriptor ( item, null ) );
+        this.itemFactory.disposeItem ( localId );
+    }
+
+    private DataItemInputChained createItem ( final Extractor extractor, final String prefix, final ItemDescriptor descriptor )
     {
         final String localId = makeId ( prefix, descriptor.getLocalId () );
         final DataItemInputChained item = this.itemFactory.createInput ( localId, descriptor.getAttributes () );
-        this.itemCache.put ( localId, item );
+
+        Map<String, DataItemInputChained> cache = this.itemCache.get ( extractor );
+        if ( cache == null )
+        {
+            cache = new HashMap<> ();
+            this.itemCache.put ( extractor, cache );
+        }
+
+        cache.put ( localId, item );
         this.storage.added ( new org.eclipse.scada.da.server.browser.common.query.ItemDescriptor ( item, descriptor.getAttributes () ) );
         return item;
     }

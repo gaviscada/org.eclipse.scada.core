@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBH SYSTEMS GmbH Corporation and others.
+ * Copyright (c) 2014 IBH SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class CpuInfoComponent extends ParserComponent
         super ( executor, hive, folder, activationPrefix );
         this.executor = executor;
 
-        this.input = new FileInput ( this.executor, new File ( "/proc/cpuinfo" ) ); //$NON-NLS-1$
+        this.input = new FileInput ( this.executor, new File ( "/proc/cpuinfo" ), 1000 ); //$NON-NLS-1$
 
         final Extractor extractor = new SplitExtractor ( "\n\n", new VariableFieldPatternExtractor ( Pattern.compile ( "^(.*?)\\s+: (.*)$", Pattern.MULTILINE ), 1, 2 ) ); //$NON-NLS-1$ //$NON-NLS-2$
         bindInput ( this.input, extractor, "prefix" ); //$NON-NLS-1$

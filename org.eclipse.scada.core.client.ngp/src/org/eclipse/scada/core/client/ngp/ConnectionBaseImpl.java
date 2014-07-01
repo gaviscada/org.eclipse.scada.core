@@ -9,6 +9,7 @@
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
  *     IBH SYSTEMS GmbH - add filter chain lifecycle
+ *          add shared socket connectors
  *******************************************************************************/
 package org.eclipse.scada.core.client.ngp;
 
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import org.apache.mina.core.service.IoProcessor;
+import org.apache.mina.transport.socket.nio.NioSession;
 import org.eclipse.scada.core.ConnectionInformation;
 import org.eclipse.scada.core.client.ConnectionState;
 import org.eclipse.scada.core.client.common.ClientBaseConnection;
@@ -73,9 +76,9 @@ public class ConnectionBaseImpl extends ClientBaseConnection
 
     private final OpenCallbacksManager callbackManager;
 
-    public ConnectionBaseImpl ( final ProtocolConfigurationFactory protocolConfigurationFactory, final ConnectionInformation connectionInformation ) throws Exception
+    public ConnectionBaseImpl ( final ProtocolConfigurationFactory protocolConfigurationFactory, final ConnectionInformation connectionInformation, final IoProcessor<NioSession> processor ) throws Exception
     {
-        super ( new ProtocolIoHandlerFactory ( protocolConfigurationFactory ), new FilterChainBuilder ( true ), connectionInformation );
+        super ( new ProtocolIoHandlerFactory ( protocolConfigurationFactory ), new FilterChainBuilder ( true ), connectionInformation, processor );
         this.responseManager = new ResponseManager ( this.statistics, this.messageSender, this.executor );
         this.callbackHandlerManager = new CallbackHandlerManager ( this.statistics );
         this.callbackManager = new OpenCallbacksManager ( this, this.statistics, this.executor );
