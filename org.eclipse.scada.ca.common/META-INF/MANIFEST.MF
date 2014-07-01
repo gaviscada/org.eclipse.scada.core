@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.ca.common;version="0.1.0",org.eclips
  e.scada.ca.common.factory;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA CA Common (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.ca.common
 Import-Package: org.apache.commons.beanutils;version="1.8.0",org.eclip
  se.scada.ca;version="0.1.0",org.eclipse.scada.ca.data;version="0.1.0"
  ,org.eclipse.scada.sec;version="0.1.0",org.eclipse.scada.utils.concur
@@ -13,5 +12,6 @@ Import-Package: org.apache.commons.beanutils;version="1.8.0",org.eclip
  "0.1.0",org.eclipse.scada.utils.lang;version="0.1.0",org.eclipse.scad
  a.utils.str;version="0.1.0",org.osgi.framework;version="1.6.0",org.os
  gi.util.tracker;version="1.5.0",org.slf4j;version="[1.5.0,2.0.0)"
+Bundle-SymbolicName: org.eclipse.scada.ca.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

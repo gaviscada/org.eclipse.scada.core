@@ -5,10 +5,9 @@ Export-Package: org.eclipse.scada.ca.protocol.ngp.codec;version="0.1.0
  .common.mc.protocol.osbp,  org.apache.mina.core.buffer,  org.eclipse.
  scada.ca.data"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA NextGenerationProtocol CA (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.ca.protocol.ngp.codec
 Import-Package: org.apache.mina.core.buffer;version="2.0.7",org.eclips
  e.scada.ca.data;version="0.1.0",org.eclipse.scada.ca.data.message;ver
  sion="0.1.0",org.eclipse.scada.core.data;version="0.1.0",org.eclipse.
@@ -16,5 +15,6 @@ Import-Package: org.apache.mina.core.buffer;version="2.0.7",org.eclips
  re.protocol.ngp.codec;version="0.1.0",org.eclipse.scada.protocol.ngp.
  common.mc.protocol;version="0.1.0",org.eclipse.scada.protocol.ngp.com
  mon.utils;version="0.1.0",org.slf4j;version="1.6.0"
+Bundle-SymbolicName: org.eclipse.scada.ca.protocol.ngp.codec
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

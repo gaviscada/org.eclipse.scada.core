@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.da.server.ngp;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA NextGenerationProtocol DA Server (Incubatio
  n)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.da.server.ngp
 Import-Package: org.apache.mina.core.session;version="2.0.2",org.eclip
  se.scada.core;version="0.1.0",org.eclipse.scada.core.data;version="0.
  1.0",org.eclipse.scada.core.data.message;version="0.1.0",org.eclipse.
@@ -22,5 +21,6 @@ Import-Package: org.apache.mina.core.session;version="2.0.2",org.eclip
  ck;version="0.1.0",org.eclipse.scada.utils;version="0.1.0",org.eclips
  e.scada.utils.concurrent;version="0.1.0",org.eclipse.scada.utils.life
  cycle;version="0.1.0",org.slf4j;version="1.5.0"
+Bundle-SymbolicName: org.eclipse.scada.da.server.ngp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

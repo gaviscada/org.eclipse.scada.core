@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA JDBC Configuration Administrator (Incubatio
  n)
-Bundle-ManifestVersion: 2
 Bundle-Activator: org.eclipse.scada.ca.jdbc.Activator
-Bundle-SymbolicName: org.eclipse.scada.ca.jdbc
+Bundle-ManifestVersion: 2
 Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  .ca.common;version="0.1.0",org.eclipse.scada.ca.data;version="0.1.0",
  org.eclipse.scada.sec;version="0.1.0",org.eclipse.scada.utils;version
@@ -16,5 +15,6 @@ Import-Package: org.eclipse.scada.ca;version="0.1.0",org.eclipse.scada
  .scada.utils.osgi.jdbc.task;version="0.1.0",org.osgi.framework;versio
  n="1.6.0",org.osgi.service.jdbc;version="1.0.0",org.slf4j;version="[1
  .5.0,2.0.0)"
+Bundle-SymbolicName: org.eclipse.scada.ca.jdbc
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.hd.server.exporter;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA HD Server Base (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.hd.server.exporter
 Import-Package: org.eclipse.scada.core;version="0.1.0",org.eclipse.sca
  da.core.server;version="0.1.0",org.eclipse.scada.hd.server;version="0
  .1.0",org.eclipse.scada.utils.lifecycle;version="0.1.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.server.exporter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

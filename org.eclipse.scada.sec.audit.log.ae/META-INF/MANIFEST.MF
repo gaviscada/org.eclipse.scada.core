@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Service-Component: OSGI-INF/service.xml
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA AE Audit Log (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.sec.audit.log.ae
 Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  .ae.data;version="0.1.0",org.eclipse.scada.ae.event;version="0.1.0",o
  rg.eclipse.scada.core;version="0.1.0",org.eclipse.scada.sec;version="
@@ -12,5 +11,6 @@ Import-Package: org.eclipse.scada.ae;version="0.1.0",org.eclipse.scada
  sec.authz;version="0.1.0",org.eclipse.scada.utils;version="0.1.0",org
  .eclipse.scada.utils.statuscodes;version="0.1.0",org.slf4j;version="1
  .6.0",org.slf4j.helpers;version="1.6.0"
+Bundle-SymbolicName: org.eclipse.scada.sec.audit.log.ae
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

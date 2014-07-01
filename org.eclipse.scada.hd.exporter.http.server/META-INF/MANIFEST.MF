@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: HD - JSON over HTTP Exporter (Incubation)
-Bundle-ManifestVersion: 2
 Bundle-Activator: org.eclipse.scada.hd.exporter.http.server.Activator
-Bundle-SymbolicName: org.eclipse.scada.hd.exporter.http.server
+Bundle-ManifestVersion: 2
 Import-Package: com.google.gson;version="1.4.0",javax.servlet;version=
  "2.5.0",javax.servlet.http;version="2.5.0",org.eclipse.scada.core;ver
  sion="0.1.0",org.eclipse.scada.core.server;version="0.1.0",org.eclips
@@ -16,5 +15,6 @@ Import-Package: com.google.gson;version="1.4.0",javax.servlet;version=
  on="0.1.0",org.eclipse.scada.utils.osgi;version="0.1.0",org.osgi.fram
  ework;version="1.6.0",org.osgi.service.http;version="1.2.0",org.osgi.
  util.tracker;version="1.5.0",org.slf4j;version="1.5.0"
+Bundle-SymbolicName: org.eclipse.scada.hd.exporter.http.server
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

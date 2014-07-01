@@ -10,6 +10,6 @@
   </parent>
   <groupId>org.eclipse.scada.core</groupId>
   <artifactId>org.eclipse.scada.da.server.exporter.rest</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1.v20140701-0927</version>
   <packaging>eclipse-plugin</packaging>
 </project>

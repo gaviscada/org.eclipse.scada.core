@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Export-Package: org.eclipse.scada.da.server.io.common;version="0.1.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Base IO Functionality (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.da.server.io.common
 Import-Package: org.apache.mina.core.buffer;version="2.0.2",org.apache
  .mina.core.file;version="2.0.2",org.apache.mina.core.filterchain;vers
  ion="2.0.2",org.apache.mina.core.future;version="2.0.2",org.apache.mi
@@ -20,5 +19,6 @@ Import-Package: org.apache.mina.core.buffer;version="2.0.2",org.apache
  ada.da.server.common.chain;version="0.1.0",org.eclipse.scada.da.serve
  r.common.impl;version="0.1.0",org.eclipse.scada.utils.collection;vers
  ion="0.1.0",org.slf4j;version="1.6.0"
+Bundle-SymbolicName: org.eclipse.scada.da.server.io.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 

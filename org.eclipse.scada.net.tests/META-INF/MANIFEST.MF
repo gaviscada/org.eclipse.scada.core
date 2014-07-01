@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Require-Bundle: org.eclipse.scada.net;bundle-version="0.1.0",org.junit
  ;bundle-version="4.8.0"
 Bundle-Vendor: Eclipse SCADA Project
-Bundle-Version: 0.1.0.v20140520-1210
+Bundle-Version: 0.1.0.v20140520-1338
 Bundle-Name: Eclipse SCADA Net Base Testing (Incubation)
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.eclipse.scada.net.tests
 Import-Package: org.apache.mina.core.buffer;version="2.0.2",org.apache
  .mina.core.filterchain;version="2.0.2",org.apache.mina.core.future;ve
  rsion="2.0.2",org.apache.mina.core.service;version="2.0.7",org.apache
  .mina.core.session;version="2.0.2",org.apache.mina.filter.codec;versi
  on="2.0.2",org.slf4j;version="1.5.0"
+Bundle-SymbolicName: org.eclipse.scada.net.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 
