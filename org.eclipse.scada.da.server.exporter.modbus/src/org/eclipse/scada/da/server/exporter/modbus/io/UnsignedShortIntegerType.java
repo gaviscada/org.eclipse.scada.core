@@ -21,6 +21,11 @@ public class UnsignedShortIntegerType extends AbstractSourceType
 
     public final static int LENGTH = AbstractSourceType.COMMON_HEADER + DATA_LENGTH;
 
+    /**
+     * A default instance with no scaling
+     */
+    public static final SourceType INSTANCE = new UnsignedShortIntegerType ();
+
     public UnsignedShortIntegerType ( final Double factor )
     {
         super ( DATA_LENGTH ); // 16bit unsigned integer
@@ -36,6 +41,16 @@ public class UnsignedShortIntegerType extends AbstractSourceType
     public void putValue ( final IoBuffer slice, final Variant value )
     {
         slice.putUnsignedShort ( makeValue ( value ) );
+    }
+
+    @Override
+    public Variant getValue ( final int localOffset, final IoBuffer value )
+    {
+        if ( localOffset == AbstractSourceType.COMMON_HEADER && value.remaining () == DATA_LENGTH )
+        {
+            return Variant.valueOf ( value.getUnsignedShort () );
+        }
+        return null;
     }
 
     private int makeValue ( final Variant value )

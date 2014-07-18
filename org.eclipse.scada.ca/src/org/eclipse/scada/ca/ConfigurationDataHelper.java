@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +37,7 @@ public class ConfigurationDataHelper
 
     /**
      * The actual configuration data
-     * 
+     *
      * @return the configuration data
      */
     public Map<String, String> getData ()
@@ -47,7 +48,7 @@ public class ConfigurationDataHelper
     /**
      * Get an integer from the data or <code>null</code> if the parameter is not
      * set or not an integer
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @return the integer or <code>null</code>
@@ -72,7 +73,7 @@ public class ConfigurationDataHelper
     /**
      * Get an integer from the data or the default value if the parameter is not
      * set or not an integer
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @param defaultValue
@@ -96,7 +97,7 @@ public class ConfigurationDataHelper
      * thrown. If the data can not be parsed to an integer a
      * {@link NumberFormatException} will be thrown.
      * </p>
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param errorMessage
@@ -118,7 +119,7 @@ public class ConfigurationDataHelper
     /**
      * Get a long from the data or <code>null</code> if the parameter is not set
      * or not a long
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @return the long or <code>null</code>
@@ -143,7 +144,7 @@ public class ConfigurationDataHelper
     /**
      * Get a long from the data or the default value if the parameter is not set
      * or not a long
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @param defaultValue
@@ -167,7 +168,7 @@ public class ConfigurationDataHelper
      * thrown. If the data can not be parsed to a long a
      * {@link NumberFormatException} will be thrown.
      * </p>
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param errorMessage
@@ -188,7 +189,7 @@ public class ConfigurationDataHelper
 
     /**
      * Get a non-empty string from the configuration.
-     * 
+     *
      * @param name
      *            the name of the parameters to get
      * @return returns <code>null</code> if the parameter is not set or is an
@@ -210,7 +211,7 @@ public class ConfigurationDataHelper
 
     /**
      * Get a string from the configuration
-     * 
+     *
      * @param name
      *            the name of the string to get
      * @return the string data or <code>null</code> if the string was not set
@@ -235,7 +236,7 @@ public class ConfigurationDataHelper
 
     /**
      * Get a string from the configuration data
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param errorMessage
@@ -258,8 +259,30 @@ public class ConfigurationDataHelper
     }
 
     /**
+     * Get a non-null, non-empty string from the configuration data
+     *
+     * @param name
+     *            the name of the parameter to get
+     * @param errorMessage
+     *            the error message if the string is not set or empty
+     * @return a not-null, non-empty string
+     * @throws IllegalArgumentException
+     *             if the string is not set or is empty
+     */
+    public String getStringNonEmptyChecked ( final String name, final String errorMessage ) throws IllegalArgumentException
+    {
+        final String str = this.data.get ( name );
+        if ( str != null && !str.isEmpty () )
+        {
+            return str;
+        }
+
+        throw new IllegalArgumentException ( errorMessage );
+    }
+
+    /**
      * Get a whitelisted string from the configuration data
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param whitelist
@@ -287,7 +310,7 @@ public class ConfigurationDataHelper
 
     /**
      * Get a whitelisted string from the configuration data
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param defaultValue
@@ -318,7 +341,7 @@ public class ConfigurationDataHelper
 
     /**
      * Get all values of the keys that start with a specific prefix
-     * 
+     *
      * @param prefix
      *            the prefix
      * @return the set of values, never <code>null</code>
@@ -341,7 +364,7 @@ public class ConfigurationDataHelper
     /**
      * Get an integer from the data or <code>null</code> if the parameter is not
      * set or not an integer
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @return the integer or <code>null</code>
@@ -366,7 +389,7 @@ public class ConfigurationDataHelper
     /**
      * Get an integer from the data or the default value if the parameter is not
      * set or not an integer
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @param defaultValue
@@ -390,7 +413,7 @@ public class ConfigurationDataHelper
      * thrown. If the data can not be parsed to an integer a
      * {@link NumberFormatException} will be thrown.
      * </p>
-     * 
+     *
      * @param name
      *            the name of the parameter to get
      * @param errorMessage
@@ -422,7 +445,7 @@ public class ConfigurationDataHelper
     /**
      * Get a boolean from the data or <code>null</code> if the parameter is not
      * set or not a boolean
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @return the boolean or <code>null</code>
@@ -447,7 +470,7 @@ public class ConfigurationDataHelper
     /**
      * Get a boolean from the data or the default value if the parameter is not
      * set or not a boolean
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @param defaultValue
@@ -467,7 +490,7 @@ public class ConfigurationDataHelper
     /**
      * Get an variant from the data or <code>null</code> if the parameter is not
      * set or not an variant
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @return the variant or <code>null</code>
@@ -492,7 +515,7 @@ public class ConfigurationDataHelper
     /**
      * Get an variant from the data or the default value if the parameter is not
      * set or not an variant
-     * 
+     *
      * @param name
      *            the name of the parameter
      * @param defaultValue
@@ -525,7 +548,7 @@ public class ConfigurationDataHelper
      * <p>
      * If you want your prefix to be "prefix." you must also add the dot.
      * </p>
-     * 
+     *
      * @param prefix
      *            the prefix to use
      * @return the result map
@@ -557,12 +580,26 @@ public class ConfigurationDataHelper
     }
 
     /**
+     * Create a configuration data helper containing only the parameters having
+     * the provided prefix, including their prefix removed.
+     *
+     * @see #getPrefixed(String)
+     * @param prefix
+     *            the prefix
+     * @return the new set of data
+     */
+    public ConfigurationDataHelper getPrefixedHelper ( final String prefix )
+    {
+        return new ConfigurationDataHelper ( getPrefixed ( prefix ) );
+    }
+
+    /**
      * Convenience method to get prefixed attributes as {@link Properties}
      * object
      * <p>
      * Actually calls {@link #getPrefixed(String)}
      * </p>
-     * 
+     *
      * @param prefix
      *            the prefix to use
      * @return the result properties
@@ -609,7 +646,7 @@ public class ConfigurationDataHelper
      * <em>Note:</em> Key that do not match at all won't get transfered into the
      * result maps.
      * </p>
-     * 
+     *
      * @param data
      *            the data to scan
      * @param pattern
@@ -683,5 +720,29 @@ public class ConfigurationDataHelper
     protected static <E extends Enum<E>> String makeEnumError ( final Class<E> enumType, final String stringValue )
     {
         return String.format ( "Value '%s' is not contained in enum. (Possible values: %s)", stringValue, StringHelper.join ( enumType.getEnumConstants (), ", " ) );
+    }
+
+    /**
+     * Return the time zone <br/>
+     * <em>Note:</em> The method internally calls
+     * {@link TimeZone#getTimeZone(String)} in order
+     * to convert the configured string to the actual time zone.
+     *
+     * @param name
+     *            the name of the parameter
+     * @param defaultValue
+     *            the default value
+     * @return the configured time zone, or the default value if none was
+     *         configured
+     */
+    public TimeZone getTimeZone ( final String name, final TimeZone defaultValue )
+    {
+        final String timeZoneId = getString ( name, null );
+        if ( timeZoneId == null || timeZoneId.isEmpty () )
+        {
+            return defaultValue;
+        }
+
+        return TimeZone.getTimeZone ( timeZoneId );
     }
 }

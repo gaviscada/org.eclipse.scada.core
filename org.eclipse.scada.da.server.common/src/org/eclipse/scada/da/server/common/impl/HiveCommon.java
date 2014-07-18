@@ -8,7 +8,7 @@
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
- *     IBH SYSTEMS GmbH - clean up subscription manager
+ *     IBH SYSTEMS GmbH - clean up subscription manager, change shutdown handling
  *******************************************************************************/
 package org.eclipse.scada.da.server.common.impl;
 
@@ -25,7 +25,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.scada.core.InvalidSessionException;
@@ -119,6 +121,8 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private boolean autoEnableStats = true;
 
+    private final ReadWriteLock browserLock = new ReentrantReadWriteLock ();
+
     private final AuthorizationProvider<AbstractSessionImpl> authorizationProvider = new AuthorizationProvider<AbstractSessionImpl> () {
 
         @Override
@@ -134,7 +138,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
         }
     };
 
-    private boolean running;
+    private final AtomicBoolean running = new AtomicBoolean ();
 
     private SubscriptionValidator<String> subscriptionValidator;
 
@@ -173,13 +177,10 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     public void start () throws Exception
     {
         logger.info ( "Starting Hive" );
-        synchronized ( this )
+
+        if ( !this.running.compareAndSet ( false, true ) )
         {
-            if ( this.running )
-            {
-                return;
-            }
-            this.running = true;
+            return;
         }
 
         this.operationService = Executors.newFixedThreadPool ( 1, new NamedThreadFactory ( "HiveCommon/" + getHiveId () ) );
@@ -198,23 +199,37 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     {
         logger.info ( "Stopping hive" );
 
-        synchronized ( this )
+        if ( !this.running.compareAndSet ( true, false ) )
         {
-            if ( !this.running )
-            {
-                return;
-            }
-            this.running = false;
+            return;
         }
 
         performStop ();
 
         disableStats ();
 
-        if ( this.browser != null )
+        try
         {
-            this.browser.stop ();
-            this.browser = null;
+            this.itemMapWriteLock.lock ();
+            this.itemMap.clear ();
+        }
+        finally
+        {
+            this.itemMapWriteLock.unlock ();
+        }
+
+        this.browserLock.writeLock ().lock ();
+        try
+        {
+            if ( this.browser != null )
+            {
+                this.browser.stop ();
+                this.browser = null;
+            }
+        }
+        finally
+        {
+            this.browserLock.writeLock ().unlock ();
         }
 
         if ( this.itemSubscriptionManager != null )
@@ -254,7 +269,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     /**
      * Get a unique ID for you hive type
-     * 
+     *
      * @return a unique id of you hive type
      */
     public abstract String getHiveId ();
@@ -312,8 +327,15 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     }
 
     /**
-     * Set the root folder. The root folder can only be set once. All
-     * further set requests are ignored.
+     * Set the root folder. <br/>
+     * <p>
+     * <em>Note:</em>The root folder can only be set once. All further set
+     * requests are ignored.
+     * </p>
+     * <p>
+     * <em>Note:</em>The root folder must be set before the start method is
+     * called (e.g. in the constructor)
+     * </p>
      */
     protected synchronized void setRootFolder ( final Folder rootFolder )
     {
@@ -355,7 +377,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     /**
      * Validate a session and return the session common instance if the session
      * is valid
-     * 
+     *
      * @param session
      *            the session to validate
      * @return the session common instance
@@ -388,7 +410,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     @Override
     public NotifyFuture<Session> createSession ( final Properties properties, final CallbackHandler callbackHandler )
     {
-        if ( !this.running )
+        if ( !this.running.get () )
         {
             return new InstantErrorFuture<> ( makeCheckRunningException () );
         }
@@ -501,7 +523,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private void checkRunning ()
     {
-        if ( !this.running )
+        if ( !this.running.get () )
         {
             throw makeCheckRunningException ();
         }
@@ -518,7 +540,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
      * Note that registering an item is only possible after the Hive has been
      * started.
      * </p>
-     * 
+     *
      * @param item
      *            the item to register
      */
@@ -583,11 +605,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     /**
      * Remove an item from the hive.
-     * <p>
-     * Note that registering an item is only possible while the hive is running
-     * (started, not stopped).
-     * </p>
-     * 
+     *
      * @param item
      *            the item to remove
      */
@@ -595,7 +613,11 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     {
         logger.debug ( "Unregister item: {}", item );
 
-        checkRunning ();
+        if ( !this.running.get () )
+        {
+            // we silently ignore this there, since everything should already be unregistered
+            return;
+        }
 
         try
         {
@@ -647,7 +669,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
      * The hive will perform several methods to check if the item id is valid.
      * <p>
      * Implementations must not create items based an a validation check!
-     * 
+     *
      * @return <code>true</code> if the item id is valid <code>false</code>
      *         otherwise
      */
@@ -716,9 +738,6 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     private static final String DATA_ITEM_OBJECT_TYPE = "ITEM"; //$NON-NLS-1$
 
-    /**
-     * @since 1.1
-     */
     @Override
     public NotifyFuture<WriteAttributeResults> startWriteAttributes ( final Session session, final String itemId, final Map<String, Variant> attributes, final OperationParameters operationParameters, final CallbackHandler callbackHandler ) throws InvalidSessionException, InvalidItemException, PermissionDeniedException
     {
@@ -734,9 +753,6 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
         };
     }
 
-    /**
-     * @since 1.1
-     */
     protected NotifyFuture<WriteAttributeResults> processWriteAttributes ( final SessionCommon session, final String itemId, final Map<String, Variant> attributes, final org.eclipse.scada.core.server.OperationParameters operationParameters )
     {
         logger.debug ( "Process write attributes - itemId: {}, attributes: {}", itemId, attributes );
@@ -827,25 +843,44 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
     }
 
     @Override
-    public synchronized HiveBrowser getBrowser ()
+    public HiveBrowser getBrowser ()
     {
-        if ( this.browser == null )
+        this.browserLock.readLock ().lock ();
+        try
         {
-            if ( this.rootFolder != null )
+            if ( this.browser != null || this.rootFolder == null )
             {
-                this.browser = new HiveBrowserCommon ( this ) {
-
-                    @Override
-                    public Folder getRootFolder ()
-                    {
-                        return HiveCommon.this.rootFolder;
-                    }
-                };
-                this.browser.start ();
+                return this.browser;
             }
         }
+        finally
+        {
+            this.browserLock.readLock ().unlock ();
+        }
 
-        return this.browser;
+        this.browserLock.writeLock ().lock ();
+        try
+        {
+            // we need to check again
+            if ( this.browser != null || this.rootFolder == null )
+            {
+                return this.browser;
+            }
+            this.browser = new HiveBrowserCommon ( this ) {
+
+                @Override
+                public Folder getRootFolder ()
+                {
+                    return HiveCommon.this.rootFolder;
+                }
+            };
+            this.browser.start ();
+            return this.browser;
+        }
+        finally
+        {
+            this.browserLock.writeLock ().unlock ();
+        }
     }
 
     public void addItemFactory ( final DataItemFactory factory )
@@ -860,7 +895,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
 
     /**
      * Gets a set of all items in granted state.
-     * 
+     *
      * @return The list of granted items.
      */
     public Set<String> getGrantedItems ()
@@ -883,6 +918,13 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
         return this.validationStrategy;
     }
 
+    /**
+     * Set the validation strategy <br/>
+     * <em>Note:</em> The validation strategy has to be set before the hive is
+     * started (e.g. in the constructor of the hive).
+     *
+     * @param validatonStrategy
+     */
     protected void setValidatonStrategy ( final ValidationStrategy validatonStrategy )
     {
         this.validationStrategy = validatonStrategy;
@@ -897,7 +939,7 @@ public abstract class HiveCommon extends ServiceCommon<Session, SessionCommon> i
      * This will disable the automatic generation of the stats module when
      * setting
      * the root folder. Must be called before {@link #setRootFolder(Folder)}
-     * 
+     *
      * @param autoEnableStats
      */
     public void setAutoEnableStats ( final boolean autoEnableStats )

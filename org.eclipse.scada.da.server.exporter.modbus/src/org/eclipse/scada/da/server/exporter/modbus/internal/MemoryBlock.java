@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBH SYSTEMS GmbH and others.
+ * Copyright (c) 2013, 2014 IBH SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,26 @@
  * Contributors:
  *     IBH SYSTEMS GmbH - initial API and implementation
  *******************************************************************************/
-package org.eclipse.scada.da.server.exporter.modbus.io;
+package org.eclipse.scada.da.server.exporter.modbus.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.mina.core.buffer.IoBuffer;
+import org.eclipse.scada.core.Variant;
 import org.eclipse.scada.da.client.DataItemValue;
 import org.eclipse.scada.da.server.exporter.common.HiveSource;
 import org.eclipse.scada.da.server.exporter.common.SingleSubscriptionManager;
 import org.eclipse.scada.da.server.exporter.common.SingleSubscriptionManager.Listener;
+import org.eclipse.scada.da.server.exporter.modbus.io.SourceDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,8 @@ public class MemoryBlock
     private final Lock readLock;
 
     private final Lock writeLock;
+
+    private final Map<Integer, SourceDefinition> writeMap = new TreeMap<> ();
 
     public MemoryBlock ( final ScheduledExecutorService executor, final HiveSource hiveSource, final Properties properties )
     {
@@ -105,6 +110,48 @@ public class MemoryBlock
         return result;
     }
 
+    public int write ( final int address, final IoBuffer value )
+    {
+        this.readLock.lock ();
+        try
+        {
+            return performWrite ( address, value );
+        }
+        finally
+        {
+            this.readLock.unlock ();
+        }
+    }
+
+    private int performWrite ( final int address, final IoBuffer value )
+    {
+        final int startAddress = address * 2;
+
+        if ( startAddress < 0 || startAddress >= 0xFFFF )
+        {
+            return 0x02; /*invalid address*/
+        }
+
+        final SourceDefinition def = this.writeMap.get ( startAddress );
+        if ( def == null )
+        {
+            return 0x02; /*invalid address*/
+        }
+
+        final int localOffset = startAddress - def.getOffset ();
+
+        final Variant writeValue = def.getType ().getValue ( localOffset, value );
+
+        if ( writeValue == null )
+        {
+            return 0x03; /*invalid data value*/
+        }
+
+        this.manager.writeValue ( def.getItemId (), writeValue, null, null );
+
+        return 0;
+    }
+
     public void setConfiguration ( final List<SourceDefinition> definitions )
     {
         this.writeLock.lock ();
@@ -123,12 +170,22 @@ public class MemoryBlock
             logger.debug ( "Remove definitions: {}", oldDefs );
             logger.debug ( "Add definitions: {}", newDefs );
 
+            // destroy old
+
             for ( final SourceDefinition def : oldDefs )
             {
                 logger.debug ( "Remove: {}", def );
                 final Listener listener = this.definitions.remove ( def );
                 this.manager.removeListener ( def.getItemId (), listener );
+
+                for ( int i = def.getOffset (); i < def.getOffset () + def.getType ().getLength (); i++ )
+                {
+                    this.writeMap.remove ( i );
+                }
             }
+
+            // build new
+
             for ( final SourceDefinition def : newDefs )
             {
                 logger.debug ( "Add: {}", def );
@@ -140,6 +197,12 @@ public class MemoryBlock
                         handleStateChange ( def, value );
                     }
                 };
+
+                for ( int i = def.getOffset (); i < def.getOffset () + def.getType ().getLength (); i++ )
+                {
+                    this.writeMap.put ( i, def );
+                }
+
                 this.manager.addListener ( def.getItemId (), listener );
                 this.definitions.put ( def, listener );
             }

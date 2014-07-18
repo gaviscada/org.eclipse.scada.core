@@ -21,6 +21,11 @@ public class ShortIntegerType extends AbstractSourceType
 
     public final static int LENGTH = AbstractSourceType.COMMON_HEADER + DATA_LENGTH;
 
+    /**
+     * A default instance with no scaling
+     */
+    public static final SourceType INSTANCE = new ShortIntegerType ();
+
     public ShortIntegerType ( final Double factor )
     {
         super ( DATA_LENGTH ); // 16bit signed integer
@@ -36,6 +41,16 @@ public class ShortIntegerType extends AbstractSourceType
     public void putValue ( final IoBuffer slice, final Variant value )
     {
         slice.putShort ( makeValue ( value ) );
+    }
+
+    @Override
+    public Variant getValue ( final int localOffset, final IoBuffer value )
+    {
+        if ( localOffset == AbstractSourceType.COMMON_HEADER && value.remaining () == DATA_LENGTH )
+        {
+            return Variant.valueOf ( value.getShort () );
+        }
+        return null;
     }
 
     private short makeValue ( final Variant value )

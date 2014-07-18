@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBH SYSTEMS GmbH and others.
+ * Copyright (c) 2013, 2014 IBH SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBH SYSTEMS GmbH - initial API and implementation
  *******************************************************************************/
-package org.eclipse.scada.da.server.exporter.modbus;
+package org.eclipse.scada.da.server.exporter.modbus.internal;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -24,7 +24,13 @@ public class InformationBean extends AbstractPropertyChange
 
     public static final String PROP_READ_HOLDING_REQUESTS_RECEIVED = "readHoldingRequestsReceived";
 
+    public static final String PROP_READ_INPUT_REQUESTS_RECEIVED = "readInputRequestsReceived";
+
     public static final String PROP_ERROR_REPLIES = "errorReplies";
+
+    public static final String PROP_WRITE_REQUESTS_SINGLE_RECEIVED = "writeRequestsSingleReceived";
+
+    public static final String PROP_WRITE_REQUESTS_MULTI_RECEIVED = "writeRequestsMultiReceived";
 
     private final AtomicLong activeSessions = new AtomicLong ();
 
@@ -33,6 +39,12 @@ public class InformationBean extends AbstractPropertyChange
     private final AtomicLong readRequestsReceived = new AtomicLong ();
 
     private final AtomicLong readHoldingRequestsReceived = new AtomicLong ();
+
+    private final AtomicLong readInputRequestsReceived = new AtomicLong ();
+
+    private final AtomicLong writeRequestsSingleReceived = new AtomicLong ();
+
+    private final AtomicLong writeRequestsMultiReceived = new AtomicLong ();
 
     private final AtomicLong errorReplies = new AtomicLong ();
 
@@ -56,9 +68,24 @@ public class InformationBean extends AbstractPropertyChange
         return this.readHoldingRequestsReceived.get ();
     }
 
+    public long getReadInputRequestsReceived ()
+    {
+        return this.readInputRequestsReceived.get ();
+    }
+
     public long getErrorReplies ()
     {
         return this.errorReplies.get ();
+    }
+
+    public long getWriteRequestsSingleReceived ()
+    {
+        return this.writeRequestsSingleReceived.get ();
+    }
+
+    public long getWriteRequestsMultiReceived ()
+    {
+        return this.writeRequestsMultiReceived.get ();
     }
 
     public void incrementActiveSessions ()
@@ -85,10 +112,28 @@ public class InformationBean extends AbstractPropertyChange
         firePropertyChange ( PROP_READ_REQUESTS_RECEIVED, null, newValue );
     }
 
+    public void incrementWriteRequestSingleReceived ()
+    {
+        final long newValue = this.writeRequestsSingleReceived.incrementAndGet ();
+        firePropertyChange ( PROP_WRITE_REQUESTS_SINGLE_RECEIVED, null, newValue );
+    }
+
+    public void incrementWriteRequestMultiReceived ()
+    {
+        final long newValue = this.writeRequestsMultiReceived.incrementAndGet ();
+        firePropertyChange ( PROP_WRITE_REQUESTS_MULTI_RECEIVED, null, newValue );
+    }
+
     public void incrementReadHoldingRequestReceived ()
     {
         final long newValue = this.readHoldingRequestsReceived.incrementAndGet ();
         firePropertyChange ( PROP_READ_HOLDING_REQUESTS_RECEIVED, null, newValue );
+    }
+
+    public void incrementReadInputRequestReceived ()
+    {
+        final long newValue = this.readInputRequestsReceived.incrementAndGet ();
+        firePropertyChange ( PROP_READ_INPUT_REQUESTS_RECEIVED, null, newValue );
     }
 
     public void incrementErrorReplies ()

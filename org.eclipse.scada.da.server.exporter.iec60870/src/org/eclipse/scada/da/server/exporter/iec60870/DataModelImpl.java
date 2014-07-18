@@ -40,11 +40,11 @@ import org.eclipse.scada.protocol.iec60870.asdu.types.CauseOfTransmission;
 import org.eclipse.scada.protocol.iec60870.asdu.types.InformationObjectAddress;
 import org.eclipse.scada.protocol.iec60870.asdu.types.QualityInformation;
 import org.eclipse.scada.protocol.iec60870.asdu.types.Value;
+import org.eclipse.scada.protocol.iec60870.io.MirrorCommand;
 import org.eclipse.scada.protocol.iec60870.server.data.AbstractBaseDataModel;
 import org.eclipse.scada.protocol.iec60870.server.data.BackgroundIterator;
 import org.eclipse.scada.protocol.iec60870.server.data.DataListener;
 import org.eclipse.scada.protocol.iec60870.server.data.DefaultSubscription;
-import org.eclipse.scada.protocol.iec60870.server.data.MirrorCommand;
 import org.eclipse.scada.protocol.iec60870.server.data.Subscription;
 import org.eclipse.scada.protocol.iec60870.server.data.event.MessageBuilder;
 import org.eclipse.scada.protocol.iec60870.server.data.event.SimpleBooleanBuilder;
@@ -419,20 +419,26 @@ public class DataModelImpl extends AbstractBaseDataModel
     }
 
     @Override
-    public void forAllAsdu ( final Function<ASDUAddress, Void> function )
+    public void forAllAsdu ( final Function<ASDUAddress, Void> function, final Runnable ifNoneFound )
     {
         this.executor.execute ( new Runnable () {
 
             @Override
             public void run ()
             {
-                performForAllAsdu ( function );
+                performForAllAsdu ( function, ifNoneFound );
             }
         } );
     }
 
-    protected synchronized void performForAllAsdu ( final Function<ASDUAddress, Void> function )
+    protected synchronized void performForAllAsdu ( final Function<ASDUAddress, Void> function, final Runnable ifNoneFound )
     {
+        if ( this.cache.isEmpty () )
+        {
+            this.executor.execute ( ifNoneFound );
+            return;
+        }
+
         for ( final Integer asdu : this.cache.keySet () )
         {
             this.executor.execute ( new Runnable () {
