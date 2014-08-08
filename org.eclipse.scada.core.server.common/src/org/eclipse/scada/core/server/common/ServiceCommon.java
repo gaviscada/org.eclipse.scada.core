@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2010, 2014 TH4 SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
+ *     IBH SYSTEMS GmbH - add context information
  *******************************************************************************/
 package org.eclipse.scada.core.server.common;
 
@@ -108,9 +109,11 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
     /**
      * Wraps the call to {@link #authenticate(Properties)} so that the correct
      * exceptions are thrown for a {@link #createSession(Properties)} call.
-     * 
+     *
      * @param properties
      *            the user session properties
+     * @param contextInformation
+     *            additional context information
      * @param callbackHandler
      *            the callback handler which handles callbacks
      * @param sessionResultProperties
@@ -118,11 +121,10 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
      * @return the user information returned by
      *         {@link #authenticate(Properties)}
      * @see #authenticate(Properties)
-     * @since 1.1
      */
-    protected NotifyFuture<UserInformation> loginUser ( final Properties properties, final CallbackHandler callbackHandler )
+    protected NotifyFuture<UserInformation> loginUser ( final Properties properties, final Map<String, Object> contextInformation, final CallbackHandler callbackHandler )
     {
-        final NotifyFuture<AuthorizationReply> future = authorize ( new AuthorizationRequest ( "SESSION", null, "CONNECT", UserInformation.ANONYMOUS, null ), callbackHandler );
+        final NotifyFuture<AuthorizationReply> future = authorize ( new AuthorizationRequest ( "SESSION", null, "CONNECT", UserInformation.ANONYMOUS, contextInformation ), callbackHandler );
         return new CallingFuture<AuthorizationReply, UserInformation> ( future ) {
 
             @Override
@@ -142,9 +144,6 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
         };
     }
 
-    /**
-     * @since 1.1
-     */
     protected void fillSessionProperties ( final UserInformation userInformation, final Map<String, String> sessionResultProperties )
     {
         if ( userInformation != null && !userInformation.isAnonymous () )
@@ -160,9 +159,6 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
         }
     }
 
-    /**
-     * @since 1.1
-     */
     protected NotifyFuture<AuthorizationReply> authorize ( final AuthorizationRequest request, final CallbackHandler callbackHandler )
     {
         return authorize ( request, callbackHandler, DEFAULT_RESULT );
@@ -174,7 +170,7 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
      * The default implementation grants everything. Override to change
      * according to your needs.
      * </p>
-     * 
+     *
      * @param objectType
      *            the type of the object the operation takes place
      * @param objectId
@@ -187,7 +183,6 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
      *            the default result that should be returned if no one votes,
      *            must not be <code>null</code>
      * @return the authorization result, never returns <code>null</code>
-     * @since 1.1
      */
     protected NotifyFuture<AuthorizationReply> authorize ( final AuthorizationRequest request, final CallbackHandler callbackHandler, final AuthorizationResult defaultResult )
     {
@@ -220,9 +215,6 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
         return result;
     }
 
-    /**
-     * @since 1.1
-     */
     protected NotifyFuture<UserInformation> makeEffectiveUserInformation ( final AbstractSessionImpl session, final String targetUser, final CallbackHandler handler )
     {
         UserInformation sessionUser = session.getUserInformation ();
@@ -234,7 +226,7 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
 
         if ( targetUser == null )
         {
-            logger.info ( "target user is null" );
+            logger.debug ( "target user is null" );
             return new InstantFuture<UserInformation> ( sessionUser );
         }
 
@@ -264,7 +256,17 @@ public abstract class ServiceCommon<S extends Session, SI extends AbstractSessio
                     throw result.getResult ().asException ();
                 }
 
-                return ServiceCommon.this.authenticationImplementation.getUser ( targetUser );
+                final UserInformation resultUser = ServiceCommon.this.authenticationImplementation.getUser ( targetUser );
+
+                logger.debug ( "Allowed to proxy user - {} -> {}", targetUser, resultUser );
+
+                if ( resultUser == null )
+                {
+                    logger.debug ( "User is not known, so fall back to anonymous" );
+                    return UserInformation.ANONYMOUS;
+                }
+
+                return resultUser;
             }
         };
     }

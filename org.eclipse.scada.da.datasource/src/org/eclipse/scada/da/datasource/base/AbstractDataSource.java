@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2009, 2014 TH4 SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     Jens Reimann - additional work
+ *     IBH SYSTEMS GmbH - fix logger
  *******************************************************************************/
 package org.eclipse.scada.da.datasource.base;
 
@@ -27,13 +28,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of a data source.
- * 
+ *
  * @author Jens Reimann
- * @since 0.15.0
  */
 public abstract class AbstractDataSource implements DataSource
 {
-    public final static Logger logger = LoggerFactory.getLogger ( AbstractDataSource.class );
+    private final static Logger logger = LoggerFactory.getLogger ( AbstractDataSource.class );
 
     private DataItemValue value = DataItemValue.DISCONNECTED;
 
@@ -52,7 +52,7 @@ public abstract class AbstractDataSource implements DataSource
 
     /**
      * Return the executor to use for sending out events
-     * 
+     *
      * @return the executor to use, must never be <code>null</code>
      */
     protected abstract Executor getExecutor ();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Jürgen Rose and others.
+ * Copyright (c) 2013, 2014 Jürgen Rose and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Jürgen Rose - initial API and implementation
+ *     IBH SYSTEMS GmbH - add login timeout
  *******************************************************************************/
 package org.eclipse.scada.ae.slave.inject.postgres;
 
@@ -53,7 +54,7 @@ public class EventInjector extends BaseStorage
 
     private static final String eventExistsSql = "SELECT count(id) FROM %sES_AE_EVENTS_HSTORE WHERE ID = ?::UUID;";
 
-    private final boolean deleteFailed = Boolean.getBoolean ( "org.eclipse.scada.ae.slave.inject.deleteFailed" );
+    private final boolean deleteFailed = Boolean.getBoolean ( Activator.SPECIFIC_PREFIX + ".deleteFailed" );
 
     private final CommonConnectionAccessor accessor;
 
@@ -61,13 +62,16 @@ public class EventInjector extends BaseStorage
 
     private final ScheduledExportedExecutorService scheduler;
 
-    private String schema;
+    private final String schema;
 
-    public EventInjector ( final DataSourceFactory dataSourceFactory, final Properties dataSourceProperties, final Integer delay, final boolean usePool, final String schema, final String instance ) throws SQLException
+    private final String replicationSchema;
+
+    public EventInjector ( final DataSourceFactory dataSourceFactory, final Properties dataSourceProperties, final Integer delay, final boolean usePool, final Long loginTimeout, final String schema, final String replicationSchema, final String instance ) throws SQLException
     {
         logger.info ( "Starting event injector" ); //$NON-NLS-1$
         this.schema = schema;
-        this.accessor = usePool ? new PoolConnectionAccessor ( dataSourceFactory, dataSourceProperties ) : new DataSourceConnectionAccessor ( dataSourceFactory, dataSourceProperties );
+        this.replicationSchema = replicationSchema;
+        this.accessor = usePool ? new PoolConnectionAccessor ( dataSourceFactory, dataSourceProperties ) : new DataSourceConnectionAccessor ( dataSourceFactory, dataSourceProperties, loginTimeout );
         this.jdbcDao = new JdbcDao ( this.accessor, schema, instance, new NodeIdProvider () {
             @Override
             public String getNodeId ()
@@ -75,7 +79,7 @@ public class EventInjector extends BaseStorage
                 return EventInjector.this.getNodeId ();
             }
         } );
-        this.scheduler = new ScheduledExportedExecutorService ( "org.eclipse.scada.ae.slave.inject", 1 ); //$NON-NLS-1$
+        this.scheduler = new ScheduledExportedExecutorService ( "org.eclipse.scada.ae.slave.inject.postgres", 1 ); //$NON-NLS-1$
 
         this.scheduler.scheduleWithFixedDelay ( new Runnable () {
 
@@ -140,7 +144,7 @@ public class EventInjector extends BaseStorage
 
     private Integer getLimit ()
     {
-        return Integer.getInteger ( "org.eclipse.scada.ae.slave.inject.limit", 2000 );
+        return Integer.getInteger ( Activator.SPECIFIC_PREFIX + ".limit", 2000 );
     }
 
     private void processRow ( final ResultSet resultSet, final ConnectionContext connectionContext ) throws SQLException
@@ -229,7 +233,7 @@ public class EventInjector extends BaseStorage
         logger.debug ( "Checking if entry already exists" );
 
         final List<Number> result;
-        result = connectionContext.query ( new SingleColumnRowMapper<Number> ( Number.class ), String.format ( eventExistsSql, this.schema ), id );
+        result = connectionContext.query ( new SingleColumnRowMapper<Number> ( Number.class ), String.format ( eventExistsSql, this.replicationSchema ), id );
         if ( result.isEmpty () )
         {
             return false;

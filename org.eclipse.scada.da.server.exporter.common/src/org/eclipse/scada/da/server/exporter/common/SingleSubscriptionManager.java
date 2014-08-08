@@ -23,9 +23,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An OSGi based HiveSource
- * 
+ *
  * @author Jens Reimann
- * @since 0.1.0
  */
 public class SingleSubscriptionManager extends AbstractSubscriptionManager
 {
@@ -40,9 +39,9 @@ public class SingleSubscriptionManager extends AbstractSubscriptionManager
 
     private final Map<String, Set<Listener>> listeners = new HashMap<> ();
 
-    public SingleSubscriptionManager ( final ScheduledExecutorService executor, final HiveSource hiveSource, final Properties properties )
+    public SingleSubscriptionManager ( final ScheduledExecutorService executor, final HiveSource hiveSource, final Properties properties, final String logName )
     {
-        super ( hiveSource, properties, executor );
+        super ( hiveSource, properties, executor, logName );
         this.executor = executor;
     }
 

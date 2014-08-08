@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.scada.da.server.browser.common.FolderCommon;
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class ComponentNode
 
     public void registerComponent ( final LinkedList<String> prefix, final ComponentFolder componentFolder, final Component component )
     {
+        logger.debug ( "Register - prefix: {}, componentFolder: {}, component: {}", prefix, componentFolder, component );
+
         // first get the name
         final String next = prefix.pop ();
 
@@ -77,15 +80,19 @@ public class ComponentNode
         // first get the name
         final String next = prefix.pop ();
 
+        logger.debug ( "Checking: {}", next );
+
         if ( prefix.isEmpty () )
         {
             remove ( next, component );
         }
         else
         {
+            logger.debug ( "Passing to sub node" );
             final ComponentNode node = this.nodes.get ( next );
             if ( node == null )
             {
+                logger.debug ( "Sub node not found" );
                 return;
             }
             node.unregisterComponent ( prefix, component );
@@ -123,6 +130,7 @@ public class ComponentNode
     {
         if ( this.parentNode != null && this.folder.size () == 0 )
         {
+            logger.debug ( "Node is empty, remove from parent" );
             this.parentNode.remove ( this );
         }
     }
@@ -132,9 +140,13 @@ public class ComponentNode
         final Iterator<Map.Entry<String, ComponentNode>> i = this.nodes.entrySet ().iterator ();
         while ( i.hasNext () )
         {
-            if ( i.next ().getValue () == componentNode )
+            final Entry<String, ComponentNode> entry = i.next ();
+            if ( entry.getValue () == componentNode )
             {
+                final String key = entry.getKey ();
                 i.remove ();
+                // also remove from folder
+                this.folder.remove ( key );
             }
         }
 

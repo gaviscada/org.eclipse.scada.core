@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Jens Reimann and others.
+ * Copyright (c) 2013, 2014 Jens Reimann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Jens Reimann - initial API and implementation
  *     Jürgen Rose - additional work
+ *     IBH SYSTEMS GmbH - clean up system properties, add login timeout
  *******************************************************************************/
 package org.eclipse.scada.ae.slave.inject.postgres;
 
@@ -26,7 +27,11 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator
 {
 
-    private static final String SPECIFIC_PREFIX = "org.eclipse.scada.ae.slave.inject";
+    public static final String SPECIFIC_PREFIX = "org.eclipse.scada.ae.slave.inject.postgres";
+
+    private static final String PROP_SCHEMA = SPECIFIC_PREFIX + ".schema";
+
+    private static final String PROP_REPLICATION_SCHEMA = SPECIFIC_PREFIX + ".replicationSchema";
 
     private final static Logger logger = LoggerFactory.getLogger ( Activator.class );
 
@@ -82,8 +87,11 @@ public class Activator implements BundleActivator
             try
             {
                 final String schema = getSchema ();
+                final String replicationSchema = getReplicationSchema ();
                 final String instance = getInstance ();
-                this.injector = new EventInjector ( service, DataSourceHelper.getDataSourceProperties ( SPECIFIC_PREFIX, DataSourceHelper.DEFAULT_PREFIX ), Integer.getInteger ( "org.eclipse.scada.ae.slave.inject.loopDelay", 10 * 1000 ), DataSourceHelper.isConnectionPool ( "org.eclipse.scada.ae.server.storage.jdbc", DataSourceHelper.DEFAULT_PREFIX, false ), schema, instance );
+                final Long loginTimeout = DataSourceHelper.getLoginTimeout ( System.getProperties (), SPECIFIC_PREFIX, DataSourceHelper.DEFAULT_PREFIX );
+                final boolean usePool = DataSourceHelper.isConnectionPool ( SPECIFIC_PREFIX, DataSourceHelper.DEFAULT_PREFIX, false );
+                this.injector = new EventInjector ( service, DataSourceHelper.getDataSourceProperties ( SPECIFIC_PREFIX, DataSourceHelper.DEFAULT_PREFIX ), Integer.getInteger ( SPECIFIC_PREFIX + ".loopDelay", 10 * 1000 ), usePool, loginTimeout, schema, replicationSchema, instance );
             }
             catch ( final SQLException e )
             {
@@ -112,15 +120,24 @@ public class Activator implements BundleActivator
 
     private String getSchema ()
     {
-        if ( !System.getProperty ( "org.eclipse.scada.ae.server.storage.jdbc.schema", "" ).trim ().isEmpty () )
+        if ( !System.getProperty ( PROP_SCHEMA, "" ).trim ().isEmpty () )
         {
-            return System.getProperty ( "org.eclipse.scada.ae.server.storage.jdbc.schema" ) + ".";
+            return System.getProperty ( PROP_SCHEMA ) + ".";
+        }
+        return "";
+    }
+
+    private String getReplicationSchema ()
+    {
+        if ( !System.getProperty ( PROP_REPLICATION_SCHEMA, "" ).trim ().isEmpty () )
+        {
+            return System.getProperty ( PROP_REPLICATION_SCHEMA ) + ".";
         }
         return "";
     }
 
     private String getInstance ()
     {
-        return System.getProperty ( "org.eclipse.scada.ae.server.storage.jdbc.instance", "default" );
+        return System.getProperty ( SPECIFIC_PREFIX + ".instance", "default" );
     }
 }

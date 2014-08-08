@@ -4,33 +4,22 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBH SYSTEMS GmbH - initial API and implementation
  */
 package org.eclipse.scada.da.server.component.parser.factory.configuration.impl;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
-import org.eclipse.scada.base.extractor.input.Input;
-
-import org.eclipse.scada.da.server.component.parser.factory.CreationContext;
-
 import org.eclipse.scada.da.server.component.parser.factory.configuration.AbstractPeriodInput;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.ParserPackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Abstract Period Input</b></em>'.
+ * An implementation of the model object '<em><b>Abstract Period Input</b></em>
+ * '.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -41,7 +30,7 @@ import org.eclipse.scada.da.server.component.parser.factory.configuration.Parser
  *
  * @generated
  */
-public abstract class AbstractPeriodInputImpl extends MinimalEObjectImpl.Container implements AbstractPeriodInput
+public abstract class AbstractPeriodInputImpl extends AbstractInputImpl implements AbstractPeriodInput
 {
     /**
      * The default value of the '{@link #getPeriod() <em>Period</em>}' attribute.
@@ -89,6 +78,7 @@ public abstract class AbstractPeriodInputImpl extends MinimalEObjectImpl.Contain
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public long getPeriod ()
     {
         return period;
@@ -99,24 +89,13 @@ public abstract class AbstractPeriodInputImpl extends MinimalEObjectImpl.Contain
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public void setPeriod ( long newPeriod )
     {
         long oldPeriod = period;
         period = newPeriod;
         if ( eNotificationRequired () )
             eNotify ( new ENotificationImpl ( this, Notification.SET, ParserPackage.ABSTRACT_PERIOD_INPUT__PERIOD, oldPeriod, period ) );
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public Input createInput ( CreationContext creationContext )
-    {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException ();
     }
 
     /**
@@ -183,22 +162,6 @@ public abstract class AbstractPeriodInputImpl extends MinimalEObjectImpl.Contain
                 return period != PERIOD_EDEFAULT;
         }
         return super.eIsSet ( featureID );
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke ( int operationID, EList<?> arguments ) throws InvocationTargetException
-    {
-        switch ( operationID )
-        {
-            case ParserPackage.ABSTRACT_PERIOD_INPUT___CREATE_INPUT__CREATIONCONTEXT:
-                return createInput ( (CreationContext)arguments.get ( 0 ) );
-        }
-        return super.eInvoke ( operationID, arguments );
     }
 
     /**

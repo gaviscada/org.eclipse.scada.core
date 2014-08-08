@@ -150,6 +150,17 @@ public class ComponentItemProvider
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected boolean shouldComposeCreationImage ()
+    {
+        return true;
+    }
+
+    /**
      * This returns the label text for the adapted class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -210,6 +221,11 @@ public class ComponentItemProvider
                 ( createChildParameter
                 ( ParserPackage.Literals.COMPONENT__INPUT,
                         ParserFactory.eINSTANCE.createUrlInput () ) );
+
+        newChildDescriptors.add
+                ( createChildParameter
+                ( ParserPackage.Literals.COMPONENT__INPUT,
+                        ParserFactory.eINSTANCE.createMqttInput () ) );
 
         newChildDescriptors.add
                 ( createChildParameter

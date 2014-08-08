@@ -4,13 +4,14 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBH SYSTEMS GmbH - initial API and implementation
  */
 package org.eclipse.scada.da.server.component.parser.factory.configuration.impl;
 
 import java.util.regex.Pattern;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -18,13 +19,21 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.*;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.AttributeValue;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.Component;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.FileInput;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.MainGroupField;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.MqttInput;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.NumericGroupField;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.ParserFactory;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.ParserPackage;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.PlainText;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.SinglePattern;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.SplitTable;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.StringGroupField;
 import org.eclipse.scada.da.server.component.parser.factory.configuration.UrlInput;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.ValueDescriptor;
+import org.eclipse.scada.da.server.component.parser.factory.configuration.VariantType;
 
 /**
  * <!-- begin-user-doc -->
@@ -100,6 +109,18 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
                 return createNumericGroupField ();
             case ParserPackage.SPLIT_TABLE:
                 return createSplitTable ();
+            case ParserPackage.STRING_TRANSFORMER:
+                return createStringTransformer ();
+            case ParserPackage.MQTT_INPUT:
+                return createMqttInput ();
+            case ParserPackage.BOOLEAN_VALUE_CONVERTER:
+                return createBooleanValueConverter ();
+            case ParserPackage.DEFAULT_VALUE_CONVERTER:
+                return createDefaultValueConverter ();
+            case ParserPackage.DOUBLE_VALUE_CONVERTER:
+                return createDoubleValueConverter ();
+            case ParserPackage.BOOLEAN_SET_VALUE_CONVERTER:
+                return createBooleanSetValueConverter ();
             default:
                 throw new IllegalArgumentException ( "The class '" + eClass.getName () + "' is not a valid classifier" ); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -208,6 +229,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public ValueDescriptor createValueDescriptor ()
     {
         ValueDescriptorImpl valueDescriptor = new ValueDescriptorImpl ();
@@ -219,6 +241,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public AttributeValue createAttributeValue ()
     {
         AttributeValueImpl attributeValue = new AttributeValueImpl ();
@@ -230,6 +253,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public MainGroupField createMainGroupField ()
     {
         MainGroupFieldImpl mainGroupField = new MainGroupFieldImpl ();
@@ -241,6 +265,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public StringGroupField createStringGroupField ()
     {
         StringGroupFieldImpl stringGroupField = new StringGroupFieldImpl ();
@@ -252,6 +277,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public NumericGroupField createNumericGroupField ()
     {
         NumericGroupFieldImpl numericGroupField = new NumericGroupFieldImpl ();
@@ -263,10 +289,78 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
      * <!-- end-user-doc -->
      * @generated
      */
+    @Override
     public SplitTable createSplitTable ()
     {
         SplitTableImpl splitTable = new SplitTableImpl ();
         return splitTable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public StringTransformer createStringTransformer ()
+    {
+        StringTransformerImpl stringTransformer = new StringTransformerImpl ();
+        return stringTransformer;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public MqttInput createMqttInput ()
+    {
+        MqttInputImpl mqttInput = new MqttInputImpl ();
+        return mqttInput;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public BooleanValueConverter createBooleanValueConverter ()
+    {
+        BooleanValueConverterImpl booleanValueConverter = new BooleanValueConverterImpl ();
+        return booleanValueConverter;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DefaultValueConverter createDefaultValueConverter ()
+    {
+        DefaultValueConverterImpl defaultValueConverter = new DefaultValueConverterImpl ();
+        return defaultValueConverter;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DoubleValueConverter createDoubleValueConverter ()
+    {
+        DoubleValueConverterImpl doubleValueConverter = new DoubleValueConverterImpl ();
+        return doubleValueConverter;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public BooleanSetValueConverter createBooleanSetValueConverter ()
+    {
+        BooleanSetValueConverterImpl booleanSetValueConverter = new BooleanSetValueConverterImpl ();
+        return booleanSetValueConverter;
     }
 
     /**
@@ -295,7 +389,7 @@ public class ParserFactoryImpl extends EFactoryImpl implements ParserFactory
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated NOT
      */
     public Pattern createPatternFromString ( final EDataType eDataType, final String initialValue )

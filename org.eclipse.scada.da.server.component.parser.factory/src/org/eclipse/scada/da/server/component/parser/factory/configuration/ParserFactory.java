@@ -130,6 +130,60 @@ public interface ParserFactory extends EFactory
     SplitTable createSplitTable ();
 
     /**
+     * Returns a new object of class '<em>String Transformer</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>String Transformer</em>'.
+     * @generated
+     */
+    StringTransformer createStringTransformer ();
+
+    /**
+     * Returns a new object of class '<em>Mqtt Input</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Mqtt Input</em>'.
+     * @generated
+     */
+    MqttInput createMqttInput ();
+
+    /**
+     * Returns a new object of class '<em>Boolean Value Converter</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Boolean Value Converter</em>'.
+     * @generated
+     */
+    BooleanValueConverter createBooleanValueConverter ();
+
+    /**
+     * Returns a new object of class '<em>Default Value Converter</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Default Value Converter</em>'.
+     * @generated
+     */
+    DefaultValueConverter createDefaultValueConverter ();
+
+    /**
+     * Returns a new object of class '<em>Double Value Converter</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Double Value Converter</em>'.
+     * @generated
+     */
+    DoubleValueConverter createDoubleValueConverter ();
+
+    /**
+     * Returns a new object of class '<em>Boolean Set Value Converter</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Boolean Set Value Converter</em>'.
+     * @generated
+     */
+    BooleanSetValueConverter createBooleanSetValueConverter ();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
