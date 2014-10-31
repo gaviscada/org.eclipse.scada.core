@@ -74,10 +74,13 @@ public class Activator implements BundleActivator
         }
 
         final Filter filter = context.createFilter ( "(&(objectClass=" + DataSourceFactory.class.getName () + ")(" + DataSourceFactory.OSGI_JDBC_DRIVER_CLASS + "=" + driver + "))" );
+        logger.info ( "Data source filter: {}", filter );
+
         this.dataSouceFactoryTracker = new SingleServiceTracker<DataSourceFactory> ( bundleContext, filter, new SingleServiceListener<DataSourceFactory> () {
             @Override
             public void serviceChange ( final ServiceReference<DataSourceFactory> reference, final DataSourceFactory dsf )
             {
+                logger.info ( "Data source factory change - {}", dsf );
                 try
                 {
                     deactivate ();
@@ -97,6 +100,10 @@ public class Activator implements BundleActivator
                         logger.error ( "an error occured on activating ae postgres storage", e );
                     }
                 }
+                else
+                {
+                    logger.info ( "No service set" );
+                }
             }
         } );
         this.dataSouceFactoryTracker.open ();
@@ -104,6 +111,7 @@ public class Activator implements BundleActivator
 
     private void activate ( final DataSourceFactory dataSourceFactory ) throws Exception
     {
+        logger.debug ( "Activate storage" );
         this.scheduler = Executors.newSingleThreadScheduledExecutor ( new NamedThreadFactory ( "org.eclipse.scada.ae.server.storage.postgresql/ScheduledExecutor" ) );
 
         final Properties dbProperties = DataSourceHelper.getDataSourceProperties ( SPECIFIC_PREFIX, DataSourceHelper.DEFAULT_PREFIX );
@@ -117,6 +125,7 @@ public class Activator implements BundleActivator
         properties.put ( Constants.SERVICE_DESCRIPTION, "PostgreSQL specific JDBC implementation for org.eclipse.scada.ae.server.storage.Storage" );
         properties.put ( Constants.SERVICE_VENDOR, "Eclipse SCADA Project" );
         this.jdbcStorageHandle = context.registerService ( new String[] { JdbcStorage.class.getName (), Storage.class.getName () }, this.jdbcStorage, properties );
+        logger.debug ( "Storage activated - {}", this.jdbcStorageHandle );
     }
 
     private String getSchema ()
@@ -138,6 +147,7 @@ public class Activator implements BundleActivator
         if ( this.scheduler != null )
         {
             this.scheduler.shutdownNow ();
+            this.scheduler = null;
         }
         if ( this.jdbcStorageHandle != null )
         {

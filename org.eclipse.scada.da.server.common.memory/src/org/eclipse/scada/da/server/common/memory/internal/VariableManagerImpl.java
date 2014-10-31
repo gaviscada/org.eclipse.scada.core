@@ -9,7 +9,7 @@
  *     TH4 SYSTEMS GmbH - initial API and implementation
  *     IBH SYSTEMS GmbH - refactor for generic memory devices
  *******************************************************************************/
-package org.eclipse.scada.da.server.common.memory;
+package org.eclipse.scada.da.server.common.memory.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +24,33 @@ import java.util.concurrent.Executors;
 
 import org.eclipse.scada.ca.ConfigurationFactory;
 import org.eclipse.scada.da.server.common.DataItem;
+import org.eclipse.scada.da.server.common.memory.Attribute;
+import org.eclipse.scada.da.server.common.memory.BitAttribute;
+import org.eclipse.scada.da.server.common.memory.BitVariable;
+import org.eclipse.scada.da.server.common.memory.ByteAttribute;
+import org.eclipse.scada.da.server.common.memory.ByteOrder;
+import org.eclipse.scada.da.server.common.memory.ByteVariable;
+import org.eclipse.scada.da.server.common.memory.DoubleFloatAttribute;
+import org.eclipse.scada.da.server.common.memory.DoubleFloatVariable;
+import org.eclipse.scada.da.server.common.memory.DoubleIntegerAttribute;
+import org.eclipse.scada.da.server.common.memory.DoubleIntegerVariable;
+import org.eclipse.scada.da.server.common.memory.FloatAttribute;
+import org.eclipse.scada.da.server.common.memory.FloatVariable;
+import org.eclipse.scada.da.server.common.memory.Int16Attribute;
+import org.eclipse.scada.da.server.common.memory.Int16Variable;
+import org.eclipse.scada.da.server.common.memory.Int32Attribute;
+import org.eclipse.scada.da.server.common.memory.Int32Variable;
+import org.eclipse.scada.da.server.common.memory.Int64Attribute;
+import org.eclipse.scada.da.server.common.memory.Int64Variable;
+import org.eclipse.scada.da.server.common.memory.Int8Attribute;
+import org.eclipse.scada.da.server.common.memory.Int8Variable;
+import org.eclipse.scada.da.server.common.memory.TriBitAttribute;
+import org.eclipse.scada.da.server.common.memory.UdtVariable;
+import org.eclipse.scada.da.server.common.memory.Variable;
+import org.eclipse.scada.da.server.common.memory.VariableListener;
+import org.eclipse.scada.da.server.common.memory.VariableManager;
+import org.eclipse.scada.da.server.common.memory.WordAttribute;
+import org.eclipse.scada.da.server.common.memory.WordVariable;
 import org.eclipse.scada.sec.UserInformation;
 import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.eclipse.scada.utils.osgi.pool.ManageableObjectPool;
@@ -48,7 +75,7 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
         /**
          * 8bit unsigned integer
          */
-        BYTE,
+        UINT8,
         /**
          * 32bit floating point
          */
@@ -56,15 +83,23 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
         /**
          * 16bit unsigned integer
          */
-        WORD,
+        UINT16,
         /**
          * 32bit unsigned integer
          */
-        DINT,
+        UINT32,
         /**
          * User defined type
          */
-        UDT
+        UDT,
+        INT8,
+        INT16,
+        INT32,
+        INT64,
+        /**
+         * 64bit floating point
+         */
+        DOUBLE
     }
 
     private static class TypeEntry
@@ -164,6 +199,14 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
         {
             return this.order;
         }
+    }
+
+    private static Map<String, String> typeAliasMap = new HashMap<> ();
+    static
+    {
+        typeAliasMap.put ( "BYTE", TYPE.UINT8.name () );
+        typeAliasMap.put ( "WORD", TYPE.UINT16.name () );
+        typeAliasMap.put ( "DINT", TYPE.UINT32.name () );
     }
 
     private final Multimap<String, VariableListener> listeners = HashMultimap.create ();
@@ -267,7 +310,7 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
 
     /**
      * Handle a type change and fire change events for all dependent types
-     * 
+     *
      * @param configurationId
      */
     private void handleTypeChange ( final String configurationId )
@@ -307,21 +350,38 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
                     case BIT:
                         result.add ( new BitVariable ( entry.getName (), entry.getIndex (), entry.getSubIndex (), this.executor, this.itemPool, createAttributes ( entry ) ) );
                         break;
-                    case BYTE:
+                    case UINT8:
                         result.add ( new ByteVariable ( entry.getName (), entry.getIndex (), this.executor, this.itemPool, createAttributes ( entry ) ) );
                         break;
                     case FLOAT:
                         result.add ( new FloatVariable ( entry.getName (), entry.getIndex (), this.executor, this.itemPool, createAttributes ( entry ) ) );
                         break;
-                    case WORD:
+                    case UINT16:
                         result.add ( new WordVariable ( entry.getName (), entry.getIndex (), entry.getOrder (), this.executor, this.itemPool, createAttributes ( entry ) ) );
                         break;
-                    case DINT:
+                    case UINT32:
                         result.add ( new DoubleIntegerVariable ( entry.getName (), entry.getIndex (), entry.getOrder (), this.executor, this.itemPool, createAttributes ( entry ) ) );
                         break;
                     case UDT:
                         result.add ( new UdtVariable ( entry.getName (), entry.getIndex (), createVariables ( entry.getTypeName () ) ) );
                         break;
+                    case INT8:
+                        result.add ( new Int8Variable ( entry.getName (), entry.getIndex (), this.executor, this.itemPool, createAttributes ( entry ) ) );
+                        break;
+                    case INT16:
+                        result.add ( new Int16Variable ( entry.getName (), entry.getIndex (), entry.getOrder (), this.executor, this.itemPool, createAttributes ( entry ) ) );
+                        break;
+                    case INT32:
+                        result.add ( new Int32Variable ( entry.getName (), entry.getIndex (), entry.getOrder (), this.executor, this.itemPool, createAttributes ( entry ) ) );
+                        break;
+                    case INT64:
+                        result.add ( new Int64Variable ( entry.getName (), entry.getIndex (), entry.getOrder (), this.executor, this.itemPool, createAttributes ( entry ) ) );
+                        break;
+                    case DOUBLE:
+                        result.add ( new DoubleFloatVariable ( entry.getName (), entry.getIndex (), this.executor, this.itemPool, createAttributes ( entry ) ) );
+                        break;
+                    case TRIBIT:
+                        throw new IllegalArgumentException ( String.format ( "TRIBIT variables are not supported right now" ) );
                 }
             }
             return result.toArray ( new Variable[result.size ()] );
@@ -350,14 +410,29 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
                     final int[] index = attrEntry.getIndexes ();
                     result.add ( new TriBitAttribute ( attrEntry.getName (), index[0], index[1], index[2], index[3], index[4], index[5], index[6] != 0, index[7] != 0 ) );
                     break;
-                case BYTE:
+                case UINT8:
                     result.add ( new ByteAttribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getIndexes ()[1] != 0 ) );
                     break;
-                case WORD:
+                case UINT16:
                     result.add ( new WordAttribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getOrder (), attrEntry.getIndexes ()[1] != 0 ) );
                     break;
-                case DINT:
+                case UINT32:
                     result.add ( new DoubleIntegerAttribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getOrder (), attrEntry.getIndexes ()[1] != 0 ) );
+                    break;
+                case INT8:
+                    result.add ( new Int8Attribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getIndexes ()[1] != 0 ) );
+                    break;
+                case INT16:
+                    result.add ( new Int16Attribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getOrder (), attrEntry.getIndexes ()[1] != 0 ) );
+                    break;
+                case INT32:
+                    result.add ( new Int32Attribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getOrder (), attrEntry.getIndexes ()[1] != 0 ) );
+                    break;
+                case INT64:
+                    result.add ( new Int64Attribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getOrder (), attrEntry.getIndexes ()[1] != 0 ) );
+                    break;
+                case DOUBLE:
+                    result.add ( new DoubleFloatAttribute ( attrEntry.getName (), attrEntry.getIndex (), attrEntry.getIndexes ()[1] != 0 ) );
                     break;
                 default:
                     break;
@@ -399,22 +474,37 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
 
     protected void parseType ( final Map<String, String> properties, final Collection<TypeEntry> result, final String varName, final String typeName, final String[] args, final boolean attribute )
     {
-        switch ( TYPE.valueOf ( typeName ) )
+        switch ( typeValue ( typeName ) )
         {
             case BIT:
                 result.add ( new TypeEntry ( varName, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), Integer.parseInt ( args[1] ), parseAttributes ( attribute, properties, varName ) ) );
                 break;
-            case BYTE:
-                result.add ( new TypeEntry ( varName, TYPE.BYTE, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), null, parseAttributes ( attribute, properties, varName ) ) );
-                break;
             case FLOAT:
                 result.add ( new TypeEntry ( varName, TYPE.FLOAT, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), null, parseAttributes ( attribute, properties, varName ) ) );
                 break;
-            case WORD:
-                result.add ( new TypeEntry ( varName, TYPE.WORD, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+            case DOUBLE:
+                result.add ( new TypeEntry ( varName, TYPE.DOUBLE, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), null, parseAttributes ( attribute, properties, varName ) ) );
                 break;
-            case DINT:
-                result.add ( new TypeEntry ( varName, TYPE.DINT, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+            case UINT8:
+                result.add ( new TypeEntry ( varName, TYPE.UINT8, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), null, parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case UINT16:
+                result.add ( new TypeEntry ( varName, TYPE.UINT16, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case UINT32:
+                result.add ( new TypeEntry ( varName, TYPE.UINT32, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case INT8:
+                result.add ( new TypeEntry ( varName, TYPE.INT8, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), null, parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case INT16:
+                result.add ( new TypeEntry ( varName, TYPE.INT16, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case INT32:
+                result.add ( new TypeEntry ( varName, TYPE.INT32, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
+                break;
+            case INT64:
+                result.add ( new TypeEntry ( varName, TYPE.INT64, Integer.parseInt ( args[0] ), Integer.parseInt ( args[1] ), makeOrder ( args ), parseAttributes ( attribute, properties, varName ) ) );
                 break;
             case UDT:
                 if ( attribute )
@@ -437,6 +527,20 @@ public class VariableManagerImpl implements VariableManager, ConfigurationFactor
                 break;
             default:
                 throw new IllegalArgumentException ( String.format ( "Type %s is not supported at the moment", typeName ) );
+        }
+    }
+
+    private TYPE typeValue ( final String typeName )
+    {
+        try
+        {
+            // directly go with new names
+            return TYPE.valueOf ( typeName );
+        }
+        catch ( final Exception e )
+        {
+            // fall back to old alias map
+            return TYPE.valueOf ( typeAliasMap.get ( typeName ) );
         }
     }
 

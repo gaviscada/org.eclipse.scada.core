@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.scada.da.server.common.memory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -83,7 +84,7 @@ public abstract class ScalarVariable implements Variable
             attr.handleError ( attributes );
         }
 
-        attributes.put ( "communcation.error", Variant.TRUE );
+        attributes.put ( "communication.error", Variant.TRUE );
 
         final MemoryDeviceDataitem item = this.item;
         if ( item != null )
@@ -134,6 +135,8 @@ public abstract class ScalarVariable implements Variable
         this.item.addChainElement ( IODirection.INPUT, new SumAlarmChainItem () );
         this.item.addChainElement ( IODirection.INPUT, new SumErrorChainItem () );
         this.item.addChainElement ( IODirection.INPUT, new SumPatternAttributesChainItem ( "manual", ".*\\.manual\\.active$" ) );
+
+        this.item.updateData ( Variant.NULL, Collections.singletonMap ( "init.error", Variant.TRUE ), AttributeMode.UPDATE );
 
         this.itemPool.addService ( itemId, this.item, null );
     }

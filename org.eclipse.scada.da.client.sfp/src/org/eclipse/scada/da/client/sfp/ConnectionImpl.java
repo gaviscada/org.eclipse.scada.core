@@ -63,25 +63,29 @@ public class ConnectionImpl extends ClientBaseConnection implements Connection
 
     private final Map<Location, FolderListener> folderListeners = new HashMap<> ();
 
+    private final long timeoutTime;
+
     public ConnectionImpl ( final ConnectionInformation connectionInformation ) throws Exception
     {
         super ( new HandlerFactory (), new FilterChainBuilder (), connectionInformation );
 
-        final String pollTime = connectionInformation.getProperties ().get ( "pollTime" );
+        final String pollTime = connectionInformation.getProperties ().get ( "pollTime" ); //$NON-NLS-1$
         if ( pollTime != null )
         {
             this.pollTime = Long.parseLong ( pollTime );
         }
         else
         {
-            this.pollTime = 1_000L;
+            this.pollTime = Long.getLong ( "org.eclipse.scada.da.client.sfp.pollTime", 250L );
         }
+
+        this.timeoutTime = Long.getLong ( "org.eclipse.scada.da.client.sfp.timeoutTime", this.pollTime * 3 );
     }
 
     @Override
     protected void onConnectionConnected ()
     {
-        getSession ().getConfig ().setReaderIdleTime ( (int) ( TimeUnit.MILLISECONDS.toSeconds ( this.pollTime ) * 3 ) + 1 );
+        getSession ().getConfig ().setReaderIdleTime ( (int)TimeUnit.MILLISECONDS.toSeconds ( this.timeoutTime ) + 1 );
         sendHello ();
     }
 
@@ -94,7 +98,7 @@ public class ConnectionImpl extends ClientBaseConnection implements Connection
     @Override
     protected synchronized void handleMessage ( final Object message )
     {
-        logger.debug ( "Handle message: {}", message );
+        logger.debug ( "Handle message: {}", message ); //$NON-NLS-1$
         if ( message instanceof Welcome )
         {
             processWelcome ( (Welcome)message );
@@ -107,7 +111,7 @@ public class ConnectionImpl extends ClientBaseConnection implements Connection
 
     private void processWelcome ( final Welcome message )
     {
-        final String charsetName = message.getProperties ().get ( "charset" );
+        final String charsetName = message.getProperties ().get ( "charset" ); //$NON-NLS-1$
         if ( charsetName != null )
         {
             final Charset charset = Charset.forName ( charsetName );
