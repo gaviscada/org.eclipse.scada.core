@@ -3,7 +3,7 @@
   <parent>
     <artifactId>org.eclipse.scada.core-parent</artifactId>
     <groupId>org.eclipse.scada.core</groupId>
-    <version>0.2.1.RC1</version>
+    <version>0.2.1.RC2</version>
     <relativePath>../org.eclipse.scada.core-parent</relativePath>
   </parent>
   <groupId>org.eclipse.scada.core.features</groupId>
