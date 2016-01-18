@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 TH4 SYSTEMS GmbH and others.
+ * Copyright (c) 2010, 2016 TH4 SYSTEMS GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     TH4 SYSTEMS GmbH - initial API and implementation
+ *     IBH SYSTEMS GmbH - use default trust factories for SSL
  *******************************************************************************/
 package org.eclipse.scada.core.net;
 
@@ -25,6 +26,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
@@ -114,7 +116,7 @@ public class ConnectionHelper
 
     /**
      * Setup the filter chain of a NET/GMPP connection
-     * 
+     *
      * @param connectionInformation
      *            the connection information to use
      * @param filterChainBuilder
@@ -149,7 +151,7 @@ public class ConnectionHelper
 
     /**
      * FIXME: still need to implement correctly
-     * 
+     *
      * @param connectionInformation
      * @param filterChainBuilder
      * @param isClient
@@ -199,9 +201,20 @@ public class ConnectionHelper
         return null;
     }
 
-    private static TrustManager[] getTrustManagers ( final ConnectionInformation connectionInformation )
+    private static TrustManager[] getTrustManagers ( final ConnectionInformation connectionInformation ) throws NoSuchAlgorithmException, KeyStoreException
     {
-        return new TrustManager[] { new X509TrustManagerImplementation () };
+        final String useBogus = connectionInformation.getProperties ().get ( "sslUseBogusTrustManager" );
+        if ( useBogus != null && !useBogus.isEmpty () && Boolean.parseBoolean ( useBogus ) )
+        {
+            return new TrustManager[] { new X509TrustManagerImplementation () };
+        }
+
+        // use default
+
+        final String factoryName = System.getProperty ( "org.eclipse.scada.core.net.trustManagerFactory", TrustManagerFactory.getDefaultAlgorithm () );
+        final TrustManagerFactory factory = TrustManagerFactory.getInstance ( factoryName );
+        factory.init ( (KeyStore)null );
+        return factory.getTrustManagers ();
     }
 
     private static KeyManager[] getKeyManagers ( final ConnectionInformation connectionInformation, final boolean isClient ) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException, CertificateException, IOException
